@@ -1,0 +1,63 @@
+.creating-deck-card-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 200px;
+  justify-content: space-around;
+}
+
+.creating-deck,
+.creating-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  flex: 1;
+  max-width: 400px;
+}
+
+.top{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.top-text{
+  font-weight: bold;
+  font-size: 0.6rem;
+}
+
+.deck_select, .text_side{
+  display: block;
+  font-size: 0.6rem;
+}
+
+
+.input-error {
+  border: 2px solid red;
+}
+
+.deck_select{
+  width: 40%;
+  display: block;
+  font-size: 0.6rem;
+}
+
+.text_side{
+  width: 90%;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.create-buttom{
+  width: 40%;
+}
+
+.image_button{
+  max-width: 1.5rem; 
+  height: auto;
+  object-fit: contain;
+  cursor: pointer;
+}

@@ -1,0 +1,115 @@
+#root {
+  max-width: 1920px;
+  text-align: center;
+}
+
+
+.header {
+  height: 45px;
+  background-color: #076117;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.site-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.login-button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+
+
+
+/* Основна частина */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.layout {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.CreatingBoxInMain{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-1 {
+  flex: 1;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: row;
+}
+
+.block-35 {
+  flex: 1 1 35%;
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem;
+}
+
+.block-65 {
+  flex: 1 1 65%;
+  padding: 0.5rem;
+}
+
+.block {
+  flex: 1;
+  padding: 1rem;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.button {
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999; /* поверх усього */
+}
+

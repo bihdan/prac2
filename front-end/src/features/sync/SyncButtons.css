@@ -1,0 +1,14 @@
+.syncButtons{
+    gap: 5px;
+    display: flex;
+    flex-direction: row;
+}
+
+.pushButton, .pullButton{
+  border: 2px solid #15ff5b;
+  border-radius: 10px;
+}
+
+.pushButton.hasChanges {
+  border-color: rgb(157, 0, 255);
+}

@@ -1,0 +1,58 @@
+.boxesOfDeck{
+    display: inline-block;
+    width: 100%;
+    height: 200px;         /* або інша фіксована висота */
+    overflow-y: auto; 
+
+}
+
+
+.boxesOfDeck::-webkit-scrollbar {
+  border-radius: 5px;
+  background-color: #242424; 
+}
+
+.boxesOfDeck::-webkit-scrollbar-thumb {
+  background: #00a70e;
+}
+
+.nameAndCountersOfDeck{
+    display: flex;
+    justify-content: space-between;
+    padding: 4px, 8px, 4px, 8px;
+}
+
+.nameAndCountersOfDeck:hover {
+  background-color: #2d6060;
+  border-radius: 10px;
+}
+
+.deckName{
+    padding-left: 18px;
+    text-align: left;
+    overflow: hidden;        
+    text-overflow: ellipsis;     
+    white-space: nowrap;  
+    max-width: 200px; 
+}
+
+.counters{
+    display: flex;
+    gap: 30px;
+    padding-right: 12px;
+}
+
+.newCardsCounterBright{
+    color: #006fa7;
+}
+
+
+.learnedCardsCounterBright{
+    color: #a70b00;
+}
+
+
+.dueCardsCounterBright{
+    color: #00a70e;
+}
+

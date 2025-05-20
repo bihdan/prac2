@@ -1,0 +1,251 @@
+import { useState } from "react";
+import "./LoginForm.css";
+
+import person_icon from "../../assets/person-icon.png"
+import email_icon from "../../assets/email-icon.png"
+import password_icon from "../../assets/password.png"
+
+function LoginForm({ onSuccess }) {
+  const [isSignup, setIsSignup] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const { username, password, email } = e.target.elements;
+
+    const payload = {
+      username: username.value,
+      password: password.value,
+      ...(isSignup && { email: email.value }),
+    };
+
+    const url = isSignup
+      ? "http://localhost:8080/api/auth/register"
+      : "http://localhost:8080/api/auth/login";
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    if (response.ok) {
+      const data = await response.text(); // або .json() якщо потрібно
+      onSuccess(payload.username);
+    } else {
+      const message = await response.text();
+      setError(`Помилка: ${message}`);
+    }
+  };
+
+return (
+    <form className="login__form" onSubmit={handleSubmit}>
+        <div className="text_underline">
+            <h1>{isSignup ? "Sign Up" : "Login"}</h1>
+
+            <div className="underline"></div>
+        </div>
+    
+
+        <div className="login__inputs">
+
+            
+            <div className={`input animated-email ${!isSignup ? "hidden" : ""}`}>
+                <img src={email_icon} alt="" />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    required={isSignup}
+                    className="login__input"
+                />
+            </div>
+            
+            <div className="input">
+                <img src={person_icon} alt="" />
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    required
+                    className="login__input"
+                />
+            </div>
+            <div className="input">
+                <img src={password_icon} alt="" />
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    required
+                    className="login__input"
+                />
+            </div>
+        </div>
+
+        {error && <div className="login__error">{error}</div>}
+
+        <div className="login__switch">
+            <button type="submit" onClick={(e) => {
+            if (!isSignup) {
+                handleSubmit(e);
+            } else {
+                setIsSignup(false);
+            }
+            }} className={!isSignup ? "submit_active" : "submit_unactive"}>
+            Login</button>
+
+            <button type="submit" onClick={(e) => {
+            if (isSignup) {
+                handleSubmit(e);
+            } else {
+                setIsSignup(true);
+            }
+            }} className={isSignup ? "submit_active" : "submit_unactive"}>
+            Sign Up</button>
+        </div>
+
+        <button type="submit" className="login__submit_button">
+            {isSignup ? "Зареєструватися" : "Увійти"}
+        </button>
+
+    </form>
+  );
+}
+
+export default LoginForm;
+
+
+
+
+
+
+
+
+
+
+.login__form {
+  max-width: 400px;
+  margin: 10px auto;
+  padding: 1rem;
+  background: #c8fbdc;
+  border: 1px solid #271ba9;
+  border-radius: 20px;
+}
+
+.text_underline{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.text_underline h1{
+  color: #32a962;
+  margin: 0;
+
+}
+
+.underline {
+  width: 61px;
+  height: 6px;
+  background-color: #32a962;
+  border-radius: 9px;
+  margin-bottom: 10px;
+}
+
+.login__inputs {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+}
+
+.login__switch {
+  display: flex;
+  gap: 5px;
+  margin: 10px auto;
+  align-items: center;
+}
+.submit_active, 
+.submit_unactive{
+  width: 100%;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  background-color: #c8fbdc;
+  color: #32a962;
+}
+
+.submit_active {
+  background-color: #87fcb6;
+  color: #32a962;
+  padding: 5px 25px;
+  border: solid;
+  border-color: #32a962;
+}
+
+.input, .animated-email {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background: #87fcb6;
+  border: none;
+  outline: none;
+  margin-bottom: 5px;
+  padding-left: 1rem;
+  gap: 5px;
+}
+
+.animated-email {
+  opacity: 1;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+.animated-email.hidden {
+  padding: 0;
+  opacity: 0;
+  max-height: 0px;
+  margin-bottom: 0;
+  pointer-events: none;
+}
+
+.input img{
+  max-width: 1rem; 
+  height: auto;
+  object-fit: contain;
+}
+
+.input input{
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #32a962;
+}
+
+.login__button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #32a962;
+  color: rgb(6, 153, 1);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login__button:hover {
+  background-color: #25eb32;
+}
+
+
+
+
