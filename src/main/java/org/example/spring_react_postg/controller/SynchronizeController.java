@@ -7,7 +7,7 @@ import org.example.spring_react_postg.model.DTO.CardDTO;
 import org.example.spring_react_postg.model.DTO.DeckDTO;
 import org.example.spring_react_postg.model.DTO.DeckUpdateDTO;
 import org.example.spring_react_postg.model.Deck;
-import org.example.spring_react_postg.payload.request.PushRequestPullResponse;
+import org.example.spring_react_postg.payload.PushRequestPullResponse;
 import org.example.spring_react_postg.payload.request.PullRequest;
 import org.example.spring_react_postg.repository.CardRepository;
 import org.example.spring_react_postg.repository.DeckRepository;
@@ -62,14 +62,14 @@ public class SynchronizeController {
 
     @PostMapping("/pull")
     public ResponseEntity<PushRequestPullResponse> pullDecksAndCards(@RequestBody PullRequest request) {
+
         List<DeckUpdateDTO> clientDecks = request.getDecks();
 
-        // Отримати всі колоди з БД
         List<Deck> allServerDecks = deckRepository.findAll();
         Map<String, Deck> serverDeckMap = allServerDecks.stream()
                 .collect(Collectors.toMap(Deck::getId, Function.identity()));
 
-        // Мапа з айді -> час оновлення з клієнта
+
         Map<String, Instant> clientDeckMap = clientDecks.stream()
                 .collect(Collectors.toMap(DeckUpdateDTO::getId, DeckUpdateDTO::getUpdatedAt));
 
@@ -77,6 +77,7 @@ public class SynchronizeController {
         List<CardDTO> cardsToSend = new ArrayList<>();
 
         for (Deck serverDeck : allServerDecks) {
+
             String deckId = serverDeck.getId();
             Instant serverUpdatedAt = serverDeck.getUpdatedAt();
             Instant clientUpdatedAt = clientDeckMap.get(deckId);
@@ -84,7 +85,7 @@ public class SynchronizeController {
             if (clientUpdatedAt != null) {
                 // Колода існує і там, і там
                 if (clientUpdatedAt.isBefore(serverUpdatedAt)) {
-                    // На сервері новіша — додати Deck і лише ті Card, які новіші
+                    // На сервері новіша — додати Deck і новіші Card
                     decksToSend.add(deckMapper.toDTO(serverDeck));
                     List<Card> updatedCards = cardRepository
                             .findByDeckIdAndUpdatedAtBetween(deckId, clientUpdatedAt.plusNanos(1), serverUpdatedAt);

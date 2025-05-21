@@ -1,4 +1,4 @@
-package org.example.spring_react_postg.payload.request;
+package org.example.spring_react_postg.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

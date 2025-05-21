@@ -28,8 +28,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
 
 
   const handleCreateCard = () => {
-    {/*select, 2*input and check(trim) for each, creating  */}
-    
+
     if (!selectedDeck) {
       alert("Оберіть колоду");
       return;

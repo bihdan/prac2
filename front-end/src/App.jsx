@@ -122,26 +122,11 @@ function App() {
     
     <div className="page">
       
-      {isCheckingAuth && <div className="loading">Завантаження...</div>}
+      {/*isCheckingAuth && <div className="loading">Завантаження...</div>*/}
 
       {!isCheckingAuth && showLoginForm && (
         <div className="modal-overlay">
-          <LoginForm  onSuccess={handleSuccess}
-          
-          /*onSuccess={(username) => {
-            setLoggedIn(true);
-            setUsername(username);
-            setShowLoginForm(false);
-
-            if (!localStorage.getItem("decks")) {
-              localStorage.setItem("decks", JSON.stringify([]));
-            }
-            if (!localStorage.getItem("cards")) {
-              localStorage.setItem("cards", JSON.stringify([]));
-            }
-          }}*/
-          
-          />
+          <LoginForm  onSuccess={handleSuccess} />
         </div>
       )}
 
@@ -162,6 +147,10 @@ function App() {
                     setUsername("");
                     setShowLogoutWarning(false);
                     setShowLoginForm(true);
+
+                    localStorage.removeItem("decks");
+                    localStorage.removeItem("cards");
+                    localStorage.removeItem("last_selected_deck");
                   }
                 }}
               >
