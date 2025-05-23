@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -55,8 +56,11 @@ public class User implements UserDetails {
 
 
     public String generateConfirmationCode(){
-        String raw = createdAt.toString(); //format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")
-        return raw;
+//        String raw = createdAt.toString(); //format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS")
+//        return raw;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+        LocalDateTime dateTime = LocalDateTime.ofInstant(createdAt, ZoneId.systemDefault());
+        return dateTime.format(formatter);
     }
 
     /**

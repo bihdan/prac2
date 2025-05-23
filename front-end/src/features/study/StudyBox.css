@@ -1,0 +1,48 @@
+.studyBox{
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: transparent;
+  padding: 16px;
+
+}
+
+.deckHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.deckNameContainer {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  
+}
+
+.cardTypesContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex: 3;
+}
+
+.cardTypeBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.newCardCheckboxesRow {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+
+.checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}

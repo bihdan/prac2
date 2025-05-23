@@ -111,7 +111,7 @@ function BrowseBox({ cards, setCards, decks, handleCardClick }) {
                             onClick={() => handleCardClick(card)}
                             >
                             <td className="tableText" >{card.front}</td>
-                            <td>{deckIdToName[card.deck_id] || "—"}</td>
+                            <td>{deckIdToName[card.deckId] || "—"}</td>
                             <td>{card.endDate || "—"}</td>
                             <td>{cardType(card.daysJump) || "—"}</td>
                             <td>{card.flag || "—"}</td>

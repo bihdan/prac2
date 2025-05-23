@@ -36,13 +36,14 @@ function App() {
     const stats = {};
 
     decks.forEach(deck => {
-      const filtered = cards.filter(card => card.deck_id === deck.id);
+      const filtered = cards.filter(card => card.deckId === deck.id);
       stats[deck.id] = {
         new: filtered.filter(c => c.daysJump === -1).length,
         familiar: filtered.filter(c => c.daysJump === 0).length,
         due: filtered.filter(c => c.daysJump > 0 && new Date(c.dueDate) <= Date.now()).length,
       };
-          
+
+      console.log(stats);
     });
     setDeckStats(stats);
   }, [decks, cards]);
@@ -56,7 +57,18 @@ function App() {
   const [username, setUsername] = useState(null);
 
   const [selectedDeckIdForStudy, setSelectedDeckIdForStudy] = useState(null);
+  const [selectedDeckForStudy, setSelectedDeckForStudy] = useState(null);
+  const [selectedStatsForStudy, setSelectedStatsForStudy] = useState(null);
+  
   const handleDeckClick = (deckId) => {
+    
+    /*setSelectedDeckForStudy(decks.find(d => d.id === deckId));
+    setSelectedStatsForStudy(stats[deckId]);
+
+    console.log(deckId);
+    console.log(selectedDeckForStudy);
+    console.log(selectedStatsForStudy);*/
+
     setSelectedDeckIdForStudy(deckId);
   };
 
@@ -192,7 +204,7 @@ function App() {
         <div className="user-info">
           <SyncButtons decks={decks} setDecks={setDecks} cards={cards} setCards={setCards}/>
           
-          {loggedIn ? `Користувач: ${username}` : "Ви не авторизовані"}
+          {loggedIn ? `${username}` : "Ви не авторизовані"}
           
 
           <button
@@ -228,9 +240,9 @@ function App() {
               
               <DetailsOfTheCard front={front} setFront={setFront} back={back} setBack={setBack}  />
 
-              <div className="block">
-                <StudyBox selectedDeckId={selectedDeckIdForStudy}/>
-              </div>
+              
+              <StudyBox selectedDeckId={selectedDeckIdForStudy} deckStats={deckStats} decks={decks} cards={cards} />
+              
               <div className="block">Блок 5</div>
               
               <BrowseBox cards={cards} setCards={setCards} decks={decks} handleCardClick={handleCardClick}/>

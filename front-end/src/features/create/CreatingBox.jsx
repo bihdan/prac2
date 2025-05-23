@@ -48,8 +48,9 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
     }*/}
 
     const confirmationCode = getCookie("confirmation_code");
-    const createdAt = Date.now();
-    const id = confirmationCode + "-" + createdAt;
+    const now = Date.now();
+    const createdAt = new Date(now).toISOString(); //.now()
+    const id = confirmationCode + "-" + now.toString();
 
     const newCard = {
       id,
@@ -83,12 +84,14 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
     setBack("");
 
     setDeckStats(prevStats => {
+      console.log(prevStats);
       const updatedStats = { ...prevStats };
       if (!updatedStats[selectedDeck]) {
         updatedStats[selectedDeck] = { new: 1, familiar: 0, due: 0 };
       } else {
         updatedStats[selectedDeck].new += 1;
       }
+      console.log(updatedStats);
       return updatedStats;
     });
 
@@ -137,6 +140,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
 
     const updatedDecks = [...decks, newDeck];
     setDecks(updatedDecks);
+
     localStorage.setItem("decks", JSON.stringify(updatedDecks));
     setDeckName("");
   };

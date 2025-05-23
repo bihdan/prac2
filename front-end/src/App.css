@@ -22,12 +22,14 @@
 .user-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .login-button {
   padding: 0.5rem 1rem;
   cursor: pointer;
+  border-radius: 8px;
+  border-color: transparent;
 }
 
 
@@ -44,7 +46,7 @@
 .layout {
   display: grid;
   gap: 20px;
-  padding: 20px;
+  padding: 10px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 

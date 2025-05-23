@@ -8,6 +8,8 @@ import pull_icon from "../../assets/pull_icon.png"
 function SyncButtons ({decks, setDecks, cards, setCards }){
 
     const [hasChanges, setHasChanges] = useState(false);
+    const [hasUpload, setHasUpload] = useState(false);
+
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -30,53 +32,55 @@ function SyncButtons ({decks, setDecks, cards, setCards }){
                 .map(({ 
                     id, 
                     name, 
-                    updated_at, 
-                    modified_at,
-                    created_at
+                    updatedAt, 
+                    modifiedAt,
+                    createdAt
                 }) => ({
                     id,
                     name,
-                    updatedAt: modified_at, // з modified_at -> updated_at
-                    createdAt: created_at
+                    updatedAt: modifiedAt, // з modified_at -> updated_at
+                    createdAt: createdAt
                 }));
 
             const cardsToSync = cards
                 .filter((c) => c.unsynchronised === -1)
                 .map(
-                ({
-                    id,
-                    deckId,
-                    front,
-                    back,
-                    flag,
-                    daysJump,
-                    ease,
-                    endDate,
-                    lapses,
-                    reviews,
-                    notes,
-                    modifiedAt,
-                    updatedAt, // не передавати, але з modified_at -> updated_at
-                }) => ({
-                    id,
-                    deckId,
-                    front,
-                    back,
-                    flag,
-                    daysJump,
-                    ease,
-                    endDate,
-                    lapses,
-                    reviews,
-                    notes,
-                    updatedAt: modifiedAt,
-                })
+                    ({
+                        id,
+                        deckId,
+                        front,
+                        back,
+                        flag,
+                        daysJump,
+                        ease,
+                        endDate,
+                        lapses,
+                        reviews,
+                        notes,
+                        modifiedAt,
+                        updatedAt,
+                        createdAt
+                    }) => ({
+                        id,
+                        deckId,
+                        front,
+                        back,
+                        flag,
+                        daysJump,
+                        ease,
+                        endDate,
+                        lapses,
+                        reviews,
+                        notes,
+                        updatedAt: modifiedAt,
+                        createdAt
+                    })
                 );
 
             // запит
             await push({ decks: decksToSync, cards: cardsToSync });
 
-            // якщо успішно — оновлюємо локально
+            // якщо успішно — оновлюємо
             const newDecks = decks.map((d) =>
                 d.unsynchronised === -1
                 ? {
@@ -119,22 +123,6 @@ function SyncButtons ({decks, setDecks, cards, setCards }){
 
             console.log('localDecks:', localDecks);
             
-            /*const response = await fetch('/api/sync/pull', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({ decks: localDecks })
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-   
-            const data = await response.json();*/
-            
             const data = await pull({ decks: localDecks});
 
             console.log('Отримано з сервера:', data);
@@ -156,15 +144,15 @@ function SyncButtons ({decks, setDecks, cards, setCards }){
                 cardMap.set(newCard.id, newCard);
             });
 
-            // Оновлені масиви
+            
             const updatedDecks = Array.from(deckMap.values());
             const updatedCards = Array.from(cardMap.values());
 
-            // Оновлюємо localStorage
+            
             localStorage.setItem('decks', JSON.stringify(updatedDecks));
             localStorage.setItem('cards', JSON.stringify(updatedCards));
 
-            // Також оновлюємо масиви, які були передані
+            
             decks.length = 0;
             cards.length = 0;
             decks.push(...updatedDecks);
@@ -215,29 +203,24 @@ function SyncButtons ({decks, setDecks, cards, setCards }){
 
     return (
         <div className="syncButtons">
-            <button 
-                className={`pushButton ${hasChanges ? "hasChanges" : ""}`} 
-                onClick={handlePush} disabled={loading}
-                >
-                Відправити
-            </button>
-
+            
             <img 
                 src={push_icon}
-                className={`image_button ${hasChanges ? "hasChanges" : ""}`}
+                className={`image_button pushButton ${hasChanges ? " hasChanges" : ""}`}
                 alt="Відправити" 
                 onClick={handlePush}
                 role="button"
             />
-
             
             <img 
                 src={pull_icon}
-                className={`image_button ${hasChanges ? "hasChanges" : ""}`}
-                alt="Відправити" 
+                className={`image_button pullButton ${hasUpload ? " hasUpload" : ""}`}
+                alt="Отримати" 
                 onClick={handlePull}
                 role="button"
             />
+
+            
         </div>
     );
 }

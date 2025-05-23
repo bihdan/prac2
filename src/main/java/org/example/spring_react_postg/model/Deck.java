@@ -23,12 +23,6 @@ import org.example.spring_react_postg.model.DTO.DeckDTO;
 @AllArgsConstructor
 public class Deck {
 
-    public Deck(DeckDTO dto) {
-        this.id = dto.getId();
-        this.name = dto.getName();
-        this.updatedAt = dto.getUpdatedAt();
-        this.createdAt = dto.getCreatedAt();
-    }
 
     /**
      * Унікальний ідентифікатор колоди.
@@ -57,6 +51,13 @@ public class Deck {
 
     @Column(nullable = false)
     private Instant createdAt;
+
+    public Deck(DeckDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.updatedAt = dto.getUpdatedAt();
+        this.createdAt = dto.getCreatedAt();
+    }
 
     /**
      * Повертає ідентифікатор колоди.

@@ -4,11 +4,28 @@
     flex-direction: row;
 }
 
+.image_button {
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
 .pushButton, .pullButton{
   border: 2px solid #15ff5b;
   border-radius: 10px;
+  background-color: #15912c;
 }
 
 .pushButton.hasChanges {
-  border-color: rgb(157, 0, 255);
+  background-color: #61173d;;
+  border-color: #91225b;
+  box-shadow: 0 0 8px rgba(145, 34, 91, 0.5);
 }
+
+.pullButton.hasUpload {
+  background-color: #174c61;;
+  border-color: rgb(45, 199, 194);
+  box-shadow: 0 0 8px rgba(45, 199, 194, 0.502);
+}
+
