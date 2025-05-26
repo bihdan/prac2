@@ -1,5 +1,6 @@
 import { useState, useEffect   } from "react";
 import "./StudyBox.css";
+import back_icon from "../../assets/back-icon.png"
 
 function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
   
@@ -13,6 +14,14 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
 
   const [deck, setDeck] = useState(null);
   const [stats, setStats] = useState(null);
+
+  const [index, setIndex] = useState(0);
+  const [studyQueue, setStudyQueue] = useState(null);
+  const [currentCard, setCurrentCard]  = useState(null);
+
+  const [isBackShown, setIsBackShown]  = useState(null);
+  
+
  
   useEffect(() => {
     if (selectedDeckId) {
@@ -30,9 +39,17 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
         includeDue
       });
 
+      if (newQueue.length === 0) {
+        alert("Немає карток для навчання.");
+        return;
+      }
+    
       console.log(newQueue);
 
-      //setStudyQueue(newQueue);
+      setStudyQueue(newQueue);
+      setIndex(0);
+      setCurrentCard(newQueue[0]);
+
       setIsSetting(false);
       setIsStudying(true);
     } else {
@@ -81,36 +98,49 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
     return queue;
   };
 
-  const handleAnswer = (card, quality) => {
+  const handleAnswer = (quality) => { // card, 
     const now = new Date();
 
     let intervalMinutes;
-    switch (quality) {
-      case "again":
-        intervalMinutes = 10;
-        card.ease = Math.max(1, card.ease - 1);
-        card.lapses += 1;
-        break;
-      case "hard":
-        intervalMinutes = 60;
-        card.ease = Math.max(1, card.ease - 0.5);
-        break;
-      case "good":
-        intervalMinutes = card.daysJump * 1440; // дні → хвилини
-        card.ease += 0.5;
-        break;
-      case "easy":
-        intervalMinutes = card.daysJump * 2 * 1440;
-        card.ease += 1;
-        break;
-    }
 
-    const nextReview = new Date(now.getTime() + intervalMinutes * 60 * 1000);
+    switch (quality) {
+    case "again":
+      // ...
+      break;
+    case "hard":
+      // ...
+      break;
+    case "good":
+      // ...
+      break;
+    case "easy":
+      // ...
+      break;
+    default:
+      return;
+  }
+
+    /*const nextReview = new Date(now.getTime() + intervalMinutes * 60 * 1000);
     card.endDate = nextReview.toISOString();
     card.updatedAt = now.toISOString();
     card.reviews += 1;
-    card.dueInSession = false;
+    card.dueInSession = false;*/
 
+
+    const nextIndex = index + 1;
+    if (nextIndex < studyQueue.length) {
+      setIndex(nextIndex);
+      setCurrentCard(studyQueue[nextIndex]);
+      setStudyQueue(studyQueue);
+      setIsBackShown(false);
+    } else {
+      // Сесія завершена
+      setStudyQueue([]);
+      setCurrentCard(null);
+      setIsStudying(false);
+      alert("Навчання завершено!");
+    }
+    console.log(index, currentCard, studyQueue[nextIndex] );
     // TODO: зберігати оновлення
 
   };
@@ -197,22 +227,17 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
       )}
 
       {isStudying && (
-        <div className="study-session">
-
-          {/* Навігація */}
-          <button className="backButton" onClick={() => { setIsStudying(false); setIsSetting(true); }}>
-            До налаштувань
-          </button>
-          <div className="cardDisplay">
-            {/*console.log(generateStudyQueue(cards, [true, false, false, false]))*/}
-            
-          </div>
+        <div className="studySession">
 
           {/* Вивід картки */}
           {/*currentCard && (
             <div className="cardDisplay">
               <div className="cardFront">
                 {currentCard.front}
+              </div>
+
+              <div className="cardBack">
+                {isBackShown ? `${currentCard.back}` : ""}
               </div>
 
               {isBackShown ? (
@@ -234,7 +259,129 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
                 </button>
               )}
             </div>
-          )*/}
+          )
+          
+          
+          
+          .studyBox{
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: transparent;
+  padding: 5px;
+
+}
+
+.deckHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.deckNameContainer {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  
+}
+
+.cardTypesContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex: 3;
+}
+
+.cardTypeBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.newCardCheckboxesRow {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+
+.checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.back_button {
+  width: 20px;
+  height: 20px;
+  padding: 4px;
+  transition: border 0.3s, box-shadow 0.3s;
+
+  align-self: flex-start;
+
+}
+
+
+
+
+
+*/}
+
+          
+          {/* Навігація */}
+          <div className="topBar">
+            <img 
+              src={back_icon}
+              className="back_button"
+              alt="Повернутися назад" 
+              onClick={() => {
+                setIsStudying(false);
+                setIsSetting(true); 
+              }}
+              role="button"
+            />
+          </div>
+
+
+          <div className="cardContainer">
+            {currentCard && (
+              <div className="cardDisplay">
+                <div className="cardFront">
+                  {currentCard.front}
+                </div>
+
+                <hr></hr>
+
+                {isBackShown && (
+                  
+                  <div className="cardBack">
+                    {currentCard.back}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+
+
+          <div className="controls">
+            {currentCard && (
+              isBackShown ? (
+                <div className="responseButtons">
+                  <button style={{ backgroundColor: 'red' }} onClick={() => handleAnswer("again")}>Знову</button>
+                  <button style={{ backgroundColor: 'yellow', color: 'black'  }} onClick={() => handleAnswer("hard")}>Важко</button>
+                  <button style={{ backgroundColor: 'green' }} onClick={() => handleAnswer("good")}>Добре</button>
+                  <button style={{ backgroundColor: 'deepskyblue' }} onClick={() => handleAnswer("easy")}>Легко</button>
+                </div>
+              ) : (
+                <button className="showAnswerButton" onClick={() => setIsBackShown(true)}>
+                  Показати відповідь
+                </button>
+              )
+            )}
+
+          </div>
 
         </div>
       )}

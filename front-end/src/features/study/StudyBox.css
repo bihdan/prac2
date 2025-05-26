@@ -2,7 +2,7 @@
   border: 1px solid #ccc;
   border-radius: 12px;
   background-color: transparent;
-  padding: 16px;
+  padding: 5px;
 
 }
 
@@ -46,3 +46,52 @@
   gap: 5px;
   margin-bottom: 10px;
 }
+
+.back_button {
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+  transition: border 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+
+  align-self: flex-start;
+
+}
+
+.studySession {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.topBar {
+  padding: 0;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.cardContainer {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardDisplay{
+  padding: 2px 15px 15px 15px;
+}
+
+.controls {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.responseButtons button {
+  margin: 5px;
+}
+
+
+
+
