@@ -2,19 +2,21 @@ package org.example.spring_react_postg.controller;
 
 import org.example.spring_react_postg.mapper.CardMapper;
 import org.example.spring_react_postg.mapper.DeckMapper;
-import org.example.spring_react_postg.model.Card;
+import org.example.spring_react_postg.model.*;
 import org.example.spring_react_postg.model.DTO.CardDTO;
 import org.example.spring_react_postg.model.DTO.DeckDTO;
 import org.example.spring_react_postg.model.DTO.DeckUpdateDTO;
-import org.example.spring_react_postg.model.Deck;
 import org.example.spring_react_postg.payload.PushRequestPullResponse;
 import org.example.spring_react_postg.payload.request.PullRequest;
 import org.example.spring_react_postg.repository.CardRepository;
 import org.example.spring_react_postg.repository.DeckRepository;
+import org.example.spring_react_postg.repository.UserRepository;
+import org.example.spring_react_postg.repository.UserStatsRepository;
 import org.example.spring_react_postg.security.service.CardService;
 import org.example.spring_react_postg.security.service.DeckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -35,10 +37,16 @@ public class SynchronizeController {
     private CardService cardService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private DeckRepository deckRepository;
 
     @Autowired
     private CardRepository cardRepository;
+
+    @Autowired
+    private UserStatsRepository userStatsRepository;
 
     @Autowired
     private DeckMapper deckMapper;
@@ -47,7 +55,8 @@ public class SynchronizeController {
     private CardMapper cardMapper;
 
     @PostMapping("/push")
-    public ResponseEntity<?> pushDecksAndCards(@RequestBody PushRequestPullResponse request) {
+    public ResponseEntity<?> pushDecksAndCards(@RequestBody PushRequestPullResponse request,
+                                               Authentication authentication) {
 
         for (DeckDTO deckDTO : request.getDecks()) {
             deckService.saveOrUpdateDeck(deckDTO);
@@ -57,18 +66,141 @@ public class SynchronizeController {
             cardService.saveOrUpdateCard(cardDTO);
         }
 
+
+        if (request.getActivity() != null && !request.getActivity().isEmpty()) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            UserStats stats = userStatsRepository.findByUserId(user.getId())
+                    .orElseThrow(() -> new RuntimeException("User stats not found"));
+
+            Map<String, DailyStats> existing = stats.getActivity();
+            Map<String, DailyStats> incoming = request.getActivity();
+
+            for (Map.Entry<String, DailyStats> entry : incoming.entrySet()) {
+                String date = entry.getKey();
+                DailyStats newStats = entry.getValue();
+
+                if (!existing.containsKey(date)) {
+                    existing.put(date, newStats);
+                } else {
+                    DailyStats oldStats = existing.get(date);
+
+                    // Додай значення полів
+                    oldStats.setReviewed(oldStats.getReviewed() + newStats.getReviewed());
+                    oldStats.setAdded(oldStats.getAdded() + newStats.getAdded());
+                    oldStats.setDurationSeconds(oldStats.getDurationSeconds() + newStats.getDurationSeconds());
+//                    oldStats.setReviews(oldStats.getReviews() + newStats.getReviews());
+
+//                    oldStats.setLearned(oldStats.getLearned() + newStats.getLearned());
+//                    oldStats.setLapses(oldStats.getLapses() + newStats.getLapses());
+//                    oldStats.setReviews(oldStats.getReviews() + newStats.getReviews());
+
+                    // Онови updatedAt, якщо новіше
+                    if (newStats.getUpdatedAt() != null &&
+                            (oldStats.getUpdatedAt() == null || newStats.getUpdatedAt().isAfter(oldStats.getUpdatedAt()))) {
+                        oldStats.setUpdatedAt(newStats.getUpdatedAt());
+                    }
+
+                    existing.put(date, oldStats);
+
+                }
+            }
+
+            stats.setActivity(existing);
+            userStatsRepository.save(stats);
+        }
+
         return ResponseEntity.ok("Synchronization successful");
     }
 
     @PostMapping("/pull")
-    public ResponseEntity<PushRequestPullResponse> pullDecksAndCards(@RequestBody PullRequest request) {
+    public ResponseEntity<PushRequestPullResponse> pullDecksAndCards(@RequestBody PullRequest request,
+                                                                     Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal(); //берем юзера
+        User user = userDetails.getUser();
+
+        List<Deck> allUserDecks = deckRepository.findByConfirmationCode(user.getConfirmationCode());
+
+
+//        Map<String, Deck> serverDeckMap = allUserDecks.stream()
+//                .collect(Collectors.toMap(Deck::getId, Function.identity()));
+
+        List<DeckUpdateDTO> clientDecks = request.getDecks();
+        Map<String, Instant> clientDeckMap = clientDecks.stream()
+                .collect(Collectors.toMap(DeckUpdateDTO::getId, DeckUpdateDTO::getUpdatedAt));
+
+
+        List<DeckDTO> decksToSend = new ArrayList<>();
+        List<CardDTO> cardsToSend = new ArrayList<>();
+
+        for (Deck serverDeck : allUserDecks) {
+
+            String deckId = serverDeck.getId();
+            Instant serverUpdatedAt = serverDeck.getUpdatedAt();
+            Instant clientUpdatedAt = clientDeckMap.get(deckId);
+
+            if (clientUpdatedAt != null) {
+                // Колода існує і там, і там
+                if (clientUpdatedAt.isBefore(serverUpdatedAt)) {
+                    // На сервері новіша — додати Deck і новіші Card
+                    decksToSend.add(deckMapper.toDTO(serverDeck));
+                    List<Card> updatedCards = cardRepository
+                            .findByDeckIdAndUpdatedAtBetween(deckId, clientUpdatedAt.plusNanos(1), serverUpdatedAt);
+                    cardsToSend.addAll(cardMapper.toDTOList(updatedCards));
+                }
+            } else {
+                // На клієнті її немає — треба надіслати всю колоду й усі її картки
+                decksToSend.add(deckMapper.toDTO(serverDeck));
+                List<Card> allCards = cardRepository.findByDeckId(deckId);
+                cardsToSend.addAll(cardMapper.toDTOList(allCards));
+            }
+        }
+
+        PushRequestPullResponse response = new PushRequestPullResponse();
+
+        response.setDecks(decksToSend);
+        response.setCards(cardsToSend);
+
+
+        UserStats stats = userStatsRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RuntimeException("userStats not found"));
+
+//        Map<String, DailyStats> filtered = stats.getActivity().entrySet().stream()
+//                .filter(entry -> entry.getValue().getUpdatedAt() != null &&
+//                        entry.getValue().getUpdatedAt().isAfter(request.getStatUpdatedAt()))
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Map<String, DailyStats> filtered;
+        Instant statUpdatedAt = request.getStatUpdatedAt();
+
+        if (statUpdatedAt == null) {
+
+            filtered = stats.getActivity();
+        } else {
+
+            filtered = stats.getActivity().entrySet().stream()
+                    .filter(entry -> entry.getValue().getUpdatedAt() != null &&
+                            entry.getValue().getUpdatedAt().isAfter(statUpdatedAt))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }
+
+        response.setActivity(filtered);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/test")
+    public ResponseEntity<PushRequestPullResponse> testPullDecksAndCards(@RequestBody PullRequest request,
+                                                                     Authentication authentication) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+//        System.out.print(userDetails);
 
         List<DeckUpdateDTO> clientDecks = request.getDecks();
 
-        List<Deck> allServerDecks = deckRepository.findAll();
-        Map<String, Deck> serverDeckMap = allServerDecks.stream()
-                .collect(Collectors.toMap(Deck::getId, Function.identity()));
-
+        List<Deck> allUserDecks = deckRepository.findByConfirmationCode(userDetails.getConfirmationCode());
 
         Map<String, Instant> clientDeckMap = clientDecks.stream()
                 .collect(Collectors.toMap(DeckUpdateDTO::getId, DeckUpdateDTO::getUpdatedAt));
@@ -76,7 +208,7 @@ public class SynchronizeController {
         List<DeckDTO> decksToSend = new ArrayList<>();
         List<CardDTO> cardsToSend = new ArrayList<>();
 
-        for (Deck serverDeck : allServerDecks) {
+        for (Deck serverDeck : allUserDecks) {
 
             String deckId = serverDeck.getId();
             Instant serverUpdatedAt = serverDeck.getUpdatedAt();
@@ -105,51 +237,6 @@ public class SynchronizeController {
 
         return ResponseEntity.ok(response);
     }
-
-//    @PostMapping("/pull")
-//    public ResponseEntity<PushRequestPullResponse> pullDecksAndCards(@RequestBody PullRequest request) {
-//        List<DeckUpdateDTO> clientDecks = request.getDecks();
-//
-//
-//        List<Deck> allServerDecks = deckRepository.findAll();
-//        Map<String, Deck> serverDeckMap = allServerDecks.stream()
-//                .collect(Collectors.toMap(Deck::getId, Function.identity()));
-//
-//
-//        Map<String, Instant> clientDeckMap = clientDecks.stream()
-//                .collect(Collectors.toMap(DeckUpdateDTO::getId, DeckUpdateDTO::getUpdatedAt));
-//
-//        List<DeckDTO> decksToSend = new ArrayList<>();
-//        List<CardDTO> cardsToSend = new ArrayList<>();
-//
-//        for (Deck serverDeck : allServerDecks) {
-//            String deckId = serverDeck.getId();
-//            Instant serverUpdatedAt = serverDeck.getUpdatedAt();
-//            Instant clientUpdatedAt = clientDeckMap.get(deckId);
-//
-//            if (clientUpdatedAt != null) {
-//
-//                if (clientUpdatedAt.isBefore(serverUpdatedAt)) {
-//
-//                    decksToSend.add(new DeckDTO(serverDeck));
-//                    List<Card> updatedCards = cardRepository
-//                            .findByDeckIdAndUpdatedAtBetween(deckId, clientUpdatedAt.plusNanos(1), serverUpdatedAt);
-//                    cardsToSend.addAll( new CardDTO(updatedCards));
-//                }
-//            } else {
-//                // На клієнті її немає — треба надіслати всю колоду й усі її картки
-//                decksToSend.add(new DeckDTO(serverDeck));
-//                List<Card> allCards = cardRepository.findByDeckId(deckId);
-//                cardsToSend.addAll(CardMapper.toDTOList(allCards));
-//            }
-//        }
-//
-//        PushRequestPullResponse response = new PushRequestPullResponse();
-//        response.setDecks(decksToSend);
-//        response.setCards(cardsToSend);
-//
-//        return ResponseEntity.ok(response);
-//    }
 
 //    public List<CardDTO> toDTOList(List<Card> cards) {
 //        return cards.stream().map(this::toDTO).collect(Collectors.toList());

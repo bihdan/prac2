@@ -2,7 +2,7 @@ import { useState, useEffect   } from "react";
 import "./StudyBox.css";
 import back_icon from "../../assets/back-icon.png"
 
-function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
+function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
   
   const [isSetting, setIsSetting] = useState(false);
   const [isStudying, setIsStudying] = useState(false);
@@ -21,8 +21,32 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
 
   const [isBackShown, setIsBackShown]  = useState(null);
   
+  const [startStudy, setStartStudy]  = useState(null);
+  const [endStudy, setEndStudy]  = useState(null);
+  
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      const end = Date.now();
+      if (startStudy !== null) {
+        const durationSeconds = Math.floor((end - startStudy) / 1000);
+        if (durationSeconds > 600) {
+          updateStudyTime(60);
+        } else {
+          updateStudyTime(durationSeconds);
+        }
+      }
+      
+      
+      
+    };
 
- 
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [startStudy]);
+
   useEffect(() => {
     if (selectedDeckId) {
       setIsSetting(true);
@@ -143,7 +167,63 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
     console.log(index, currentCard, studyQueue[nextIndex] );
     // TODO: зберігати оновлення
 
+    incrementReviewedStatToday();
+
   };
+
+  function incrementReviewedStatToday() {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    console.log(today);
+
+    setActivity(prev => {
+      const now = Date.now();
+      const modifiedAt = new Date(now).toISOString();
+      
+      const updated = {
+        ...prev,
+        [today]: {
+          added: prev[today]?.added || 0,
+          reviewed: (prev[today]?.reviewed || 0) + 1,
+          time: prev[today]?.time || 0,
+          unsynchronised: -1,
+          modifiedAt : modifiedAt,
+          updatedAt: prev[today]?.updatedAt || null
+        }
+      };
+
+      localStorage.setItem("activity", JSON.stringify(updated));
+      return updated;
+    });
+
+  }
+
+  function updateStudyTime(duration) {
+    const today = new Date().toISOString().slice(0, 10);
+    setActivity(prev => {
+      //const prevDay = prev[today] || { added: 0, reviewed: 0, time: 0 };
+
+      const now = Date.now();
+      const modifiedAt = new Date(now).toISOString();
+
+      const updated = {
+        ...prev,
+        [today]: {
+          added: (prev[today]?.added || 0) + 1,
+          reviewed: prev[today]?.reviewed || 0,
+          time: (prev[today]?.time || 0) + duration,
+          unsynchronised: -1,
+          modifiedAt : modifiedAt,
+          updatedAt: prev[today]?.updatedAt || null
+        }
+      };
+
+      localStorage.setItem("activity", JSON.stringify(updated));
+      return updated;
+    });
+
+  }
+
+
 
   return (
     <div className="studyBox">
@@ -228,107 +308,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards }) {
 
       {isStudying && (
         <div className="studySession">
-
-          {/* Вивід картки */}
-          {/*currentCard && (
-            <div className="cardDisplay">
-              <div className="cardFront">
-                {currentCard.front}
-              </div>
-
-              <div className="cardBack">
-                {isBackShown ? `${currentCard.back}` : ""}
-              </div>
-
-              {isBackShown ? (
-                <>
-                  <div className="cardBack">
-                    {currentCard.back}
-                  </div>
-
-                  <div className="responseButtons">
-                    <button onClick={() => handleAnswer("again")}>Знову</button>
-                    <button onClick={() => handleAnswer("hard")}>Важко</button>
-                    <button onClick={() => handleAnswer("good")}>Добре</button>
-                    <button onClick={() => handleAnswer("easy")}>Легко</button>
-                  </div>
-                </>
-              ) : (
-                <button className="showAnswerButton" onClick={() => setIsBackShown(true)}>
-                  Показати відповідь
-                </button>
-              )}
-            </div>
-          )
-          
-          
-          
-          .studyBox{
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background-color: transparent;
-  padding: 5px;
-
-}
-
-.deckHeader {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.deckNameContainer {
-  display: flex;
-  align-items: flex-start;
-  flex: 1;
   
-}
-
-.cardTypesContainer {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  flex: 3;
-}
-
-.cardTypeBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.newCardCheckboxesRow {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-}
-
-
-.checkboxes {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
-.back_button {
-  width: 20px;
-  height: 20px;
-  padding: 4px;
-  transition: border 0.3s, box-shadow 0.3s;
-
-  align-self: flex-start;
-
-}
-
-
-
-
-
-*/}
-
-          
           {/* Навігація */}
           <div className="topBar">
             <img 

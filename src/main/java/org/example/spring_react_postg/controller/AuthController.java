@@ -3,15 +3,14 @@ package org.example.spring_react_postg.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.example.spring_react_postg.model.AuthToken;
+import org.example.spring_react_postg.model.UserStats;
 import org.example.spring_react_postg.model.User;
 import org.example.spring_react_postg.payload.request.LoginRequest;
 import org.example.spring_react_postg.payload.request.SignupRequest;
 import org.example.spring_react_postg.repository.AuthTokenRepository;
+import org.example.spring_react_postg.repository.UserStatsRepository;
 import org.example.spring_react_postg.repository.UserRepository;
-import org.example.spring_react_postg.security.jwt.AuthenticationTokenFilter;
-import org.example.spring_react_postg.security.service.DeckService;
 import org.example.spring_react_postg.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -47,8 +46,9 @@ public class AuthController {
     @Autowired
     AuthTokenRepository authTokenRepository;
 
+    @Autowired
+    UserStatsRepository userStatsRepository;
     private BCryptPasswordEncoder encode = new BCryptPasswordEncoder(12);
-
 
 
 //    @Autowired
@@ -190,11 +190,15 @@ public class AuthController {
 
         AuthToken authToken = new AuthToken();
 
-        String tokenValue = authToken.generateUuid();
+        String tokenValue = authToken.generateUuid(); //TODO: authToken.generateToken(user, userAgent);
         authToken.setToken(tokenValue);
         authToken.setUser(user);
+        authTokenRepository.save(authToken);
 
-        authTokenRepository.save(authToken); // зберігаємо токен
+        UserStats userStats = new UserStats();
+        userStats.setUser(user);
+//        stat.setActivityHistoryJson("{}");
+        userStatsRepository.save(userStats);
 
         response.addHeader(HttpHeaders.SET_COOKIE, createAuthTokenCookie(authToken.getToken()));
 

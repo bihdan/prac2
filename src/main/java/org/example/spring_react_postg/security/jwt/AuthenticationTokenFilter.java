@@ -38,16 +38,6 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = extractTokenFromCookies(request);
 
-//        if (request.getCookies() != null) {
-//            for (Cookie cookie : request.getCookies()) {
-//                if ("AUTH_TOKEN".equals(cookie.getName())) {
-//                    token = cookie.getValue();
-////                    break;
-//                }
-//            }
-//        }
-
-
         if (token != null && !token.isEmpty()) {
             Optional<AuthToken> authTokenOpt = authTokenRepository.findByToken(token);
 

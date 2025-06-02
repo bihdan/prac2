@@ -14,7 +14,7 @@ import StudyBox from "./features/study/StudyBox"
 import BrowseBox from "./features/browse/BrowseBox"
 import DetailsOfTheCard from "./features/browse/DetailsOfTheCard"
 
-
+import StatisticBox from "./features/statistic/StatisticBox"
 
 function App() {
 
@@ -26,6 +26,11 @@ function App() {
   const [cards, setCards] = useState(() => {
     const saved = localStorage.getItem("cards");
     return saved ? JSON.parse(saved) : [];
+  });
+
+  const [activity, setActivity] = useState(() => {
+    const saved = localStorage.getItem("activity");
+    return saved ? JSON.parse(saved) : {};
   });
 
 
@@ -43,7 +48,7 @@ function App() {
         due: filtered.filter(c => c.daysJump > 0 && new Date(c.dueDate) <= Date.now()).length,
       };
 
-      console.log(stats);
+      //console.log(stats);
     });
     setDeckStats(stats);
   }, [decks, cards]);
@@ -61,25 +66,8 @@ function App() {
   const [selectedStatsForStudy, setSelectedStatsForStudy] = useState(null);
   
   const handleDeckClick = (deckId) => {
-    
-    /*setSelectedDeckForStudy(decks.find(d => d.id === deckId));
-    setSelectedStatsForStudy(stats[deckId]);
-
-    console.log(deckId);
-    console.log(selectedDeckForStudy);
-    console.log(selectedStatsForStudy);*/
-
     setSelectedDeckIdForStudy(deckId);
   };
-
-  /*const [card, setCard] = useState(null);
-  const handleCardClick = (cardId) => {
-    //setCard(cardId);
-    const selectedCard = cards.find((c) => c.id === cardId);
-    if (selectedCard) {
-      setCard(selectedCard);
-    }
-  };*/
 
   const [front, setFront] = useState("");
   const [back, setBack] = useState("");
@@ -126,6 +114,9 @@ function App() {
     }
     if (!localStorage.getItem("cards")) {
       localStorage.setItem("cards", JSON.stringify([]));
+    }
+    if (!localStorage.getItem("activity")) {
+      localStorage.setItem("activity", JSON.stringify({}));
     }
   };
 
@@ -202,7 +193,7 @@ function App() {
       <header className="header">
         <div className="site-title">DCRepetify</div>
         <div className="user-info">
-          <SyncButtons decks={decks} setDecks={setDecks} cards={cards} setCards={setCards}/>
+          <SyncButtons decks={decks} setDecks={setDecks} cards={cards} setCards={setCards} activity={activity} setActivity={setActivity} />
           
           {loggedIn ? `${username}` : "Ви не авторизовані"}
           
@@ -211,7 +202,7 @@ function App() {
             className="login-button"
             onClick={() => {
               if (loggedIn) {
-                setShowLogoutWarning(true); // відкриває попередження
+                setShowLogoutWarning(true);
               } else {
                 setShowLoginForm(!showLoginForm);
               }
@@ -233,17 +224,13 @@ function App() {
               
               <DecksAndCounters decks={decks} cards={cards} deckStats={deckStats} setDeckStats={setDeckStats} onDeskClick={handleDeckClick}/>
               
-              
-              <div className="CreatingBoxInMain">
-                <CreatingBox decks={decks} setDecks={setDecks} cards={cards} setCards={setCards} prevStats={deckStats} setDeckStats={setDeckStats}/>
-              </div>
+              <CreatingBox decks={decks} setDecks={setDecks} cards={cards} setCards={setCards} prevStats={deckStats} setDeckStats={setDeckStats} setActivity={setActivity} />
               
               <DetailsOfTheCard front={front} setFront={setFront} back={back} setBack={setBack}  />
 
+              <StudyBox selectedDeckId={selectedDeckIdForStudy} deckStats={deckStats} decks={decks} cards={cards} setActivity={setActivity} />
               
-              <StudyBox selectedDeckId={selectedDeckIdForStudy} deckStats={deckStats} decks={decks} cards={cards} />
-              
-              <div className="block">Блок 5</div>
+              <StatisticBox activity={activity} />
               
               <BrowseBox cards={cards} setCards={setCards} decks={decks} handleCardClick={handleCardClick}/>
               

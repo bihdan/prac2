@@ -1,0 +1,112 @@
+.statisticBox{
+  flex-direction: row;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  background-color: transparent;
+  height: 220px;
+  /*min-width: 330px;*/
+}
+
+.totalStatsButton{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.switchType_button{
+  width: 28px;
+  height: 28px;
+  padding: 4px 8px 0 0;
+  transition: border 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.weekStats {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 150px;
+  margin-top: 1rem;
+  
+  gap: 5px;
+  padding: 0 10px 0 10px;
+}
+
+.chartAndDate{
+  flex-direction: column;
+  width: 14%;
+  gap: 4px;
+}
+
+.chart_day {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: end;
+  gap: 4px;
+  height: 120px;
+}
+
+.dayDisplay{
+  align-items: center;
+}
+
+.bar {
+  width: 10px;
+  margin-bottom: 4px;
+  transition: height 0.3s;
+  border-bottom: 1px solid #ccc;
+
+}
+
+.bar.added {
+  background-color: #006fa7;
+  height: "50px"
+}
+
+.bar.reviewed {
+  background-color: #a70b00;
+}
+
+.bar.time {
+  background-color: #00a70e;
+}
+
+.dateLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.dateLabel {
+  width: 14%;
+  text-align: center;
+}
+
+.dayDisplay{
+  font-size: 0.8em;
+}

@@ -3,7 +3,7 @@ import "./CreatingBox.css";
 import flashdeck_icon from "../../assets/flash-deck.png"
 import flashcard_icon from "../../assets/flash-card.png"
 
-function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats }) {
+function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats, setActivity }) {
 
   const [deckName, setDeckName] = useState("");
   const [deckNameError, setDeckNameError] = useState(false);
@@ -84,26 +84,28 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
     setBack("");
 
     setDeckStats(prevStats => {
-      console.log(prevStats);
+      
       const updatedStats = { ...prevStats };
       if (!updatedStats[selectedDeck]) {
         updatedStats[selectedDeck] = { new: 1, familiar: 0, due: 0 };
       } else {
         updatedStats[selectedDeck].new += 1;
       }
-      console.log(updatedStats);
+      
       return updatedStats;
     });
 
     const deckDiv = document.querySelector(`[data-id="${selectedDeck}"]`);
-      if (deckDiv) {
-        const counter = deckDiv.querySelector(".newCardsCounter, .newCardsCounterBright");
-        if (counter) {
-          const current = parseInt(counter.textContent || "0", 10);
-          counter.textContent = current + 1;
-          counter.className = "newCardsCounterBright";
-        }
+    if (deckDiv) {
+      const counter = deckDiv.querySelector(".newCardsCounter, .newCardsCounterBright");
+      if (counter) {
+        const current = parseInt(counter.textContent || "0", 10);
+        counter.textContent = current + 1;
+        counter.className = "newCardsCounterBright";
       }
+    }
+
+    incrementAddedStatToday();
 
   };
 
@@ -145,86 +147,113 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
     setDeckName("");
   };
 
+  function incrementAddedStatToday() {
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+    console.log(today);
+
+    setActivity(prev => {
+      const now = Date.now();
+      const modifiedAt = new Date(now).toISOString();
+
+      const updated = {
+        ...prev,
+        [today]: {
+          added: (prev[today]?.added || 0) + 1,
+          reviewed: prev[today]?.reviewed || 0,
+          time: prev[today]?.time || 0,
+          unsynchronised: -1,
+          modifiedAt : modifiedAt,
+          updatedAt: prev[today]?.updatedAt || null
+        }
+      };
+
+      localStorage.setItem("activity", JSON.stringify(updated));
+      return updated;
+    });
+
+  }
 
 
 
   
 
   return (
-    <div className="creating-deck-card-box">
-      
-      {/* Створення картки */}
-      <div className="creating-card">
-        <div className="top">
-            <div className="top-text">Нова картка</div>
+    <div className="CreatingBoxInMain">
+      <div className="creating-deck-card-box">
+        
+        {/* Створення картки */}
+        <div className="creating-card">
+          <div className="top">
+              <div className="top-text">Нова картка</div>
 
-            <select 
-            className="deck_select"
-            value={selectedDeck}
-            onChange={(e) => setSelectedDeck(e.target.value)}>
-                
-                {decks.map((deck) => (
-                    <option key={deck.id} value={deck.id}>
-                    {deck.name}
-                    </option>
-                ))}
-            </select>
+              <select 
+              className="deck_select"
+              value={selectedDeck}
+              onChange={(e) => setSelectedDeck(e.target.value)}>
+                  
+                  {decks.map((deck) => (
+                      <option key={deck.id} value={deck.id}>
+                      {deck.name}
+                      </option>
+                  ))}
+              </select>
 
-            <img 
-                src={flashcard_icon}
-                className="image_button"
-                alt="Додати картку" 
-                onClick={handleCreateCard}
-                role="button"
-            />
+              <img 
+                  src={flashcard_icon}
+                  className="image_button"
+                  alt="Додати картку" 
+                  onClick={handleCreateCard}
+                  role="button"
+              />
+          </div>
+
+          <input
+            type="text"
+            value={front}
+            onChange={(e) => setFront(e.target.value)}
+
+            onFocus={() => setFrontError(false)}
+            className={`text_side ${frontError ? "input-error" : ""}`}
+            placeholder={frontError ? "Поле не може бути порожнім" : "Передня сторона"}
+          />
+
+          <input
+            type="text"
+            value={back}
+            onChange={(e) => setBack(e.target.value)}
+            className="text_side"
+            placeholder="Задня сторона"
+          />
+
         </div>
 
-        <input
-          type="text"
-          value={front}
-          onChange={(e) => setFront(e.target.value)}
+        {/* Створення колоди */}
+        <div className="creating-deck">
 
-          onFocus={() => setFrontError(false)}
-          className={`text_side ${frontError ? "input-error" : ""}`}
-          placeholder={frontError ? "Поле не може бути порожнім" : "Передня сторона"}
-        />
+          <div className="top">
+              <div className="top-text">Нова колода</div>
 
-        <input
-          type="text"
-          value={back}
-          onChange={(e) => setBack(e.target.value)}
-          className="text_side"
-          placeholder="Задня сторона"
-        />
+              <img 
+                  src={flashdeck_icon}
+                  className="image_button"
+                  alt="Додати картку" 
+                  onClick={handleCreateDeck}
+                  role="button"
+              />
+          </div>
 
-      </div>
+          <input
+            type="text"
+            value={deckName}
+            onChange={(e) => setDeckName(e.target.value)}
+            onFocus={() => setDeckNameError(false)}
+            className={`text_side ${deckNameError ? "input-error" : ""}`}
+            placeholder={deckNameError ? "Назва не може бути порожньою" : "Назва колоди"}
+          />
 
-      {/* Створення колоди */}
-      <div className="creating-deck">
-
-        <div className="top">
-            <div className="top-text">Нова колода</div>
-
-            <img 
-                src={flashdeck_icon}
-                className="image_button"
-                alt="Додати картку" 
-                onClick={handleCreateDeck}
-                role="button"
-            />
         </div>
 
-        <input
-          type="text"
-          value={deckName}
-          onChange={(e) => setDeckName(e.target.value)}
-          onFocus={() => setDeckNameError(false)}
-          className={`text_side ${deckNameError ? "input-error" : ""}`}
-          placeholder={deckNameError ? "Назва не може бути порожньою" : "Назва колоди"}
-        />
-
       </div>
-
     </div>
   );
 }

@@ -53,6 +53,9 @@ tr{
 th{
     font-size: 0.6rem;
     background-color: #2a2a2a;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 td{
     font-size: 0.6rem;

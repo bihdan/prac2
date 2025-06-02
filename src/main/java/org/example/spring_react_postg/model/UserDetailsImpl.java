@@ -32,6 +32,18 @@ public class UserDetailsImpl implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singleton(new SimpleGrantedAuthority("USER"));
     }
+    public int getId(){
+        return user.getId();
+    }
+
+    public String getConfirmationCode(){
+        return user.getConfirmationCode();
+    }
+
+    public User getUser(){
+        return user;
+    }
+
 
     @Override
     public String getPassword() {

@@ -5,7 +5,7 @@ import {push, pull} from "./syncService";
 import push_icon from "../../assets/push_icon.png"
 import pull_icon from "../../assets/pull_icon.png"
 
-function SyncButtons ({decks, setDecks, cards, setCards }){
+function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  }){
 
     const [hasChanges, setHasChanges] = useState(false);
     const [hasUpload, setHasUpload] = useState(false);
@@ -26,7 +26,7 @@ function SyncButtons ({decks, setDecks, cards, setCards }){
         setMessage("Відправка...");
 
         try {
-        // фільтрування і форматування об'єктів для відправки
+        // філь і форм об'єктів для відправки
             const decksToSync = decks
                 .filter((d) => d.unsynchronised === -1)
                 .map(({ 
@@ -76,11 +76,31 @@ function SyncButtons ({decks, setDecks, cards, setCards }){
                         createdAt
                     })
                 );
+            
+            const activityRaw =  activity; //JSON.parse(localStorage.getItem("activity") || "{}");
+            const activityToSync = Object.fromEntries(
+                Object.entries(activityRaw)
+                    .filter(([_, value]) => value.unsynchronised === -1)
+                    .map(([date, value]) => [
+                        date,
+                        {
+                            reviewed: value.reviewed,
+                            added: value.added,
+                            durationSeconds: value.time,
+                            updatedAt: value.modifiedAt
+                        }
+                    ])
+            );
+
 
             // запит
-            await push({ decks: decksToSync, cards: cardsToSync });
+            await push({ 
+                decks: decksToSync, 
+                cards: cardsToSync,
+                activity: activityToSync 
+            });
 
-            // якщо успішно — оновлюємо
+            
             const newDecks = decks.map((d) =>
                 d.unsynchronised === -1
                 ? {
@@ -100,11 +120,27 @@ function SyncButtons ({decks, setDecks, cards, setCards }){
                     }
                 : c
             );
+            
+            const newActivity = { ...activityRaw };
+            for (const [date, value] of Object.entries(newActivity)) {
+                if (value.unsynchronised === -1) {
+                    newActivity[date] = {
+                        ...value,
+                        updatedAt: value.modifiedAt,
+                        unsynchronised: null
+                    };
+                }
+            }
 
             setDecks(newDecks);
-            setCards(newCards);
             localStorage.setItem("decks", JSON.stringify(newDecks));
+
+            setCards(newCards);
             localStorage.setItem("cards", JSON.stringify(newCards));
+
+            setActivity(newActivity);
+            localStorage.setItem("activity", JSON.stringify(newActivity));
+
             setMessage("Синхронізовано успішно.");
         } catch (error) {
             console.error("Push error:", error);

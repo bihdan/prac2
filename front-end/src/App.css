@@ -48,14 +48,10 @@
   gap: 20px;
   padding: 10px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  
 }
 
-.CreatingBoxInMain{
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
 
 .row-1 {
   flex: 1;
