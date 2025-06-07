@@ -12,9 +12,9 @@
 }
 
 .pushButton, .pullButton{
-  border: 2px solid #15ff5b;
+  border: 2px solid var(--text-color);
   border-radius: 10px;
-  background-color: #15912c;
+  background-color: transparent;
 }
 
 .pushButton.hasChanges {

@@ -85,14 +85,14 @@ function StatisticBox({activity}){
 
          
         const tempo = max ? `${(value / max) * 100}%` : "0%";
-        console.log("value ", value,"max ", max,"tempo ", tempo,"day ", day);
+        //console.log("value ", value,"max ", max,"tempo ", tempo,"day ", day);
 
         return tempo
     };
 
 
     return (
-        <div className="statisticBox">
+        <div className="statisticBox oneOfMainBlock">
             <div className="totalStatsButton">
 
                 <img 

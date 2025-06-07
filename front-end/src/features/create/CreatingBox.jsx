@@ -178,11 +178,11 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
   
 
   return (
-    <div className="CreatingBoxInMain">
-      <div className="creating-deck-card-box">
+    <div className="CreatingBoxInMain ">
+
         
         {/* Створення картки */}
-        <div className="creating-card">
+        <div className="creating-card oneOfMainBlock">
           <div className="top">
               <div className="top-text">Нова картка</div>
 
@@ -228,7 +228,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
         </div>
 
         {/* Створення колоди */}
-        <div className="creating-deck">
+        <div className="creating-deck oneOfMainBlock">
 
           <div className="top">
               <div className="top-text">Нова колода</div>
@@ -253,7 +253,6 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
 
         </div>
 
-      </div>
     </div>
   );
 }

@@ -1,8 +1,6 @@
 .statisticBox{
   flex-direction: row;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background-color: transparent;
+
   height: 220px;
   /*min-width: 330px;*/
 }

@@ -8,7 +8,7 @@ function DecksAndCounters({ decks, cards, deckStats, setDeckStats, onDeskClick})
 
 return (
     
-    <div className="boxForDecksDisplay" id="boxForDecks">
+    <div className="boxForDecksDisplay oneOfMainBlock" id="boxForDecks">
         <div className="textAboveDecks">
             <div className="leftLabel">
                 <span>Колода</span>

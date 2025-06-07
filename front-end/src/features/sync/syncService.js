@@ -1,13 +1,13 @@
 const BASE_URL = "http://localhost:8080/api/sync";
 
-export async function push({ decks, cards }) {
+export async function push({ decks, cards, activity }) {
   const response = await fetch(`${BASE_URL}/push`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ decks, cards }),
+    body: JSON.stringify({ decks, cards, activity }),
   });
 
   if (!response.ok) {
@@ -17,14 +17,14 @@ export async function push({ decks, cards }) {
   return await response.text();
 }
 
-export async function pull({ decks}) {
+export async function pull({ decks, activity }) {
   const response = await fetch(`${BASE_URL}/pull`, {
     method: "POST",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ decks}),
+    body: JSON.stringify({ decks, activity}),
   });
 
   if (!response.ok) {

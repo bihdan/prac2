@@ -118,6 +118,8 @@ public class SynchronizeController {
     @PostMapping("/pull")
     public ResponseEntity<PushRequestPullResponse> pullDecksAndCards(@RequestBody PullRequest request,
                                                                      Authentication authentication) {
+        System.out.print(request);
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal(); //берем юзера
         User user = userDetails.getUser();
 
@@ -191,52 +193,52 @@ public class SynchronizeController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<PushRequestPullResponse> testPullDecksAndCards(@RequestBody PullRequest request,
-                                                                     Authentication authentication) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-//        System.out.print(userDetails);
-
-        List<DeckUpdateDTO> clientDecks = request.getDecks();
-
-        List<Deck> allUserDecks = deckRepository.findByConfirmationCode(userDetails.getConfirmationCode());
-
-        Map<String, Instant> clientDeckMap = clientDecks.stream()
-                .collect(Collectors.toMap(DeckUpdateDTO::getId, DeckUpdateDTO::getUpdatedAt));
-
-        List<DeckDTO> decksToSend = new ArrayList<>();
-        List<CardDTO> cardsToSend = new ArrayList<>();
-
-        for (Deck serverDeck : allUserDecks) {
-
-            String deckId = serverDeck.getId();
-            Instant serverUpdatedAt = serverDeck.getUpdatedAt();
-            Instant clientUpdatedAt = clientDeckMap.get(deckId);
-
-            if (clientUpdatedAt != null) {
-                // Колода існує і там, і там
-                if (clientUpdatedAt.isBefore(serverUpdatedAt)) {
-                    // На сервері новіша — додати Deck і новіші Card
-                    decksToSend.add(deckMapper.toDTO(serverDeck));
-                    List<Card> updatedCards = cardRepository
-                            .findByDeckIdAndUpdatedAtBetween(deckId, clientUpdatedAt.plusNanos(1), serverUpdatedAt);
-                    cardsToSend.addAll(cardMapper.toDTOList(updatedCards));
-                }
-            } else {
-                // На клієнті її немає — треба надіслати всю колоду й усі її картки
-                decksToSend.add(deckMapper.toDTO(serverDeck));
-                List<Card> allCards = cardRepository.findByDeckId(deckId);
-                cardsToSend.addAll(cardMapper.toDTOList(allCards));
-            }
-        }
-
-        PushRequestPullResponse response = new PushRequestPullResponse();
-        response.setDecks(decksToSend);
-        response.setCards(cardsToSend);
-
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/test")
+//    public ResponseEntity<PushRequestPullResponse> testPullDecksAndCards(@RequestBody PullRequest request,
+//                                                                     Authentication authentication) {
+//        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+//
+////        System.out.print(userDetails);
+//
+//        List<DeckUpdateDTO> clientDecks = request.getDecks();
+//
+//        List<Deck> allUserDecks = deckRepository.findByConfirmationCode(userDetails.getConfirmationCode());
+//
+//        Map<String, Instant> clientDeckMap = clientDecks.stream()
+//                .collect(Collectors.toMap(DeckUpdateDTO::getId, DeckUpdateDTO::getUpdatedAt));
+//
+//        List<DeckDTO> decksToSend = new ArrayList<>();
+//        List<CardDTO> cardsToSend = new ArrayList<>();
+//
+//        for (Deck serverDeck : allUserDecks) {
+//
+//            String deckId = serverDeck.getId();
+//            Instant serverUpdatedAt = serverDeck.getUpdatedAt();
+//            Instant clientUpdatedAt = clientDeckMap.get(deckId);
+//
+//            if (clientUpdatedAt != null) {
+//                // Колода існує і там, і там
+//                if (clientUpdatedAt.isBefore(serverUpdatedAt)) {
+//                    // На сервері новіша — додати Deck і новіші Card
+//                    decksToSend.add(deckMapper.toDTO(serverDeck));
+//                    List<Card> updatedCards = cardRepository
+//                            .findByDeckIdAndUpdatedAtBetween(deckId, clientUpdatedAt.plusNanos(1), serverUpdatedAt);
+//                    cardsToSend.addAll(cardMapper.toDTOList(updatedCards));
+//                }
+//            } else {
+//                // На клієнті її немає — треба надіслати всю колоду й усі її картки
+//                decksToSend.add(deckMapper.toDTO(serverDeck));
+//                List<Card> allCards = cardRepository.findByDeckId(deckId);
+//                cardsToSend.addAll(cardMapper.toDTOList(allCards));
+//            }
+//        }
+//
+//        PushRequestPullResponse response = new PushRequestPullResponse();
+//        response.setDecks(decksToSend);
+//        response.setCards(cardsToSend);
+//
+//        return ResponseEntity.ok(response);
+//    }
 
 //    public List<CardDTO> toDTOList(List<Card> cards) {
 //        return cards.stream().map(this::toDTO).collect(Collectors.toList());

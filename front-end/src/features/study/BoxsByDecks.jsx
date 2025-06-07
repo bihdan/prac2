@@ -6,7 +6,7 @@ function BoxsByDecks({ decks, cards, deckStats, setDeckStats, onDeskClick}) { //
   const renderedIds = new Set();
 
   return (
-    <div className="boxesOfDeck">
+    <div className="boxesOfDeck ">
       {decks.map((deck) => {
         if (renderedIds.has(deck.id)) return null;
         renderedIds.add(deck.id);
@@ -25,15 +25,15 @@ function BoxsByDecks({ decks, cards, deckStats, setDeckStats, onDeskClick}) { //
             </div>
 
             <div className='counters'>
-              <div className={newCards > 0 ? "newCardsCounterBright" : "newCardsCounter"}>
+              <div className={newCards > 0 ? "newCardsCounterBright" : "cardsCounter"}>
                 {newCards}
               </div>
 
-              <div className={learnedCards > 0 ? "learnedCardsCounterBright" : "learnedCardsCounter"}>
+              <div className={learnedCards > 0 ? "learnedCardsCounterBright" : "cardsCounter"}>
                 {learnedCards}
               </div>
 
-              <div className={dueCards > 0 ? "dueCardsCounterBright" : "dueCardsCounter"}>
+              <div className={dueCards > 0 ? "dueCardsCounterBright" : "cardsCounter"}>
                 {dueCards}
               </div>
 

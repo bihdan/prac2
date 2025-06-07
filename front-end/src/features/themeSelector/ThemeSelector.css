@@ -1,0 +1,69 @@
+.themeSelector {
+    position: relative;
+    display: inline-block;
+}
+
+.selectorButton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.themeColorDisplay {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 20px;
+    border: 1px solid #888;
+    cursor: pointer;
+}
+
+.themeList {
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    top: 32px;
+    left: 0;
+    background-color: var(--block-color);
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 4px;
+
+    gap: 4px;
+    z-index: 999;
+}
+
+.themeItem {
+
+    display: flex;
+    flex-direction: row;
+    padding: 3px 5px;
+    gap: 4px;
+
+    border-radius: 4px;
+    border: 2px solid transparent;
+
+    white-space: nowrap;
+
+    color: var(--text-color);
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.themeName{
+    font-size: 0.8em;
+}
+
+.themeItem:hover {
+    opacity: 0.8;
+}
+
+.themeItem.selected {
+    border-color: #0040ff;
+}

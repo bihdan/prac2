@@ -26,4 +26,12 @@ public class DeckUpdateDTO {
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "DeckUpdateDTO{" +
+                "id='" + id + '\'' +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

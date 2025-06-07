@@ -1,18 +1,43 @@
+:root{
+  --bg-color: #121212;
+  --header-color: #1e1e1e;
+  --block-color: #2a2a2a;
+  --text-color: #ffffff;
+}
+
+
+
+
 #root {
   max-width: 1920px;
   text-align: center;
+  color: var(--text-color);
+}
+
+.page{
+  background-color: var(--bg-color);
 }
 
 
 .header {
   height: 45px;
-  background-color: #076117;
+  background-color: var(--header-color); /* #DDF6D2; 076117*/
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 1rem;
   border-bottom: 1px solid #ccc;
 }
+
+.titleAndSelector{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
 
 .site-title {
   font-weight: bold;
@@ -48,37 +73,17 @@
   gap: 20px;
   padding: 10px;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+}
+
+.oneOfMainBlock{
+  height: 220px;
   
+  background-color: var(--block-color);
+  border: 1px solid var(--text-color);
+  border-radius: 12px;
 }
 
-
-
-.row-1 {
-  flex: 1;
-  border-right: 1px solid #ccc;
-  display: flex;
-  flex-direction: row;
-}
-
-.block-35 {
-  flex: 1 1 35%;
-  border-bottom: 1px solid #ccc;
-  padding: 0.5rem;
-}
-
-.block-65 {
-  flex: 1 1 65%;
-  padding: 0.5rem;
-}
-
-.block {
-  flex: 1;
-  padding: 1rem;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
 
 .input {
   padding: 0.5rem;
@@ -88,6 +93,20 @@
 .button {
   padding: 0.5rem;
   font-size: 1rem;
+  cursor: pointer;
+
+}
+
+.he{
+  color: var(--text-color);
+}
+
+.customButton{
+  border-radius: 20px;
+  border: none;
+  color: black;
+  background-color: #0da229;
+  padding: 4px;
   cursor: pointer;
 }
 
@@ -111,3 +130,26 @@
   z-index: 999; /* поверх усього */
 }
 
+
+.modal{
+  max-width: 400px;
+  margin: 10px auto;
+  padding: 1rem;
+  background: #2c553c;
+  border: 1px solid #271ba9;
+  border-radius: 20px;
+}
+
+.modal_buttons{
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.redButton{
+  background-color: red;
+}

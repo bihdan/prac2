@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import "./SyncButtons.css";
 import {push, pull} from "./syncService";
 
-import push_icon from "../../assets/push_icon.png"
-import pull_icon from "../../assets/pull_icon.png"
+import push_icon from "../../assets/push-icon.png"
+import pull_icon from "../../assets/pull-icon.png"
 
 function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  }){
 
@@ -154,13 +154,30 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
         try {
             const localDecks = decks.map(deck => ({
                 id: deck.id,
-                updatedAt: deck.updated_at
+                updatedAt: deck.updatedAt
             }));
 
-            console.log('localDecks:', localDecks);
-            
-            const data = await pull({ decks: localDecks});
+            let statUpdatedAt = null;
 
+            for (const day in activity) {
+                const updatedAt = activity[day]?.updatedAt;
+                if (updatedAt) {
+                    const updatedInstant = new Date(updatedAt);
+                    if (!statUpdatedAt || updatedInstant > new Date(statUpdatedAt)) {
+                        statUpdatedAt = updatedInstant.toISOString();
+                    }
+                }
+            }
+
+            console.log('localDecks:', localDecks);
+            console.log('statUpdatedAt:', statUpdatedAt);
+
+            const data = await pull({
+                decks: localDecks,
+                statUpdatedAt: statUpdatedAt
+            });
+
+            
             console.log('Отримано з сервера:', data);
 
             const newDecks = data.decks;

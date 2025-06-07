@@ -1,16 +1,14 @@
 .studyBox{
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  background-color: transparent;
-  padding: 5px;
 
+  flex-direction: column;
+  
 }
 
 .deckHeader {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 20px;
+  flex-direction: column;
+  /*justify-content: space-between;
+  gap: 20px;*/
 }
 
 .deckNameContainer {
@@ -23,6 +21,7 @@
 .cardTypesContainer {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   gap: 20px;
   flex: 3;
 }
@@ -36,6 +35,9 @@
 .newCardCheckboxesRow {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  padding-left: 20px;
   gap: 8px;
 }
 
@@ -92,6 +94,79 @@
   margin: 5px;
 }
 
+.expantionChech{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  padding-left: 20px;
+}
+
+
+.trianle_button{
+  display: block;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+}
+
+
+.expantionOfDateBox{
+  overflow-y: auto;
+  flex-direction: column;
+}
+
+.expantionDate{
+  align-items: center;
+  /*justify-content: center;*/
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  padding-left: 36px;
+}
+
+.dateDisplay{
+  font-size: 0.8em;
+}
+
+.hideDiv{
+  visibility: hidden;
+}
+
+.trianle_button.rotate{
+  rotate: 90deg;
+}
+
+
+.trianle_Fakebutton{
+  align-items: center;
+  justify-content: center;
+
+
+  /*border-top: 20px transparent;
+  border-right: 0px transparent;
+  border-bottom: 12px transparent;
+  border-left: 20px solid gray;
+
+  width: 0;
+  height: 0px;*/
+  
+
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+}
 
 
 
+.leftSpace{
+  text-align: start;
+  padding-left: 35px;
+
+}

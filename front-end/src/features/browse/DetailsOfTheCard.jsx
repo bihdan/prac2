@@ -30,7 +30,7 @@ function DetailsOfTheCard({ front, setFront, back, setBack }) { // { card, setca
 
 
   return (
-    <div className="detailOfTheCard">
+    <div className="detailOfTheCard oneOfMainBlock">
       <div className="containers">
         <span>front</span>
         <div className="frontContainer">

@@ -1,25 +1,40 @@
 .browseContainer{
 
-  display: flex;
-  width: 100%;
-  height: 100%;
-  overflow: hidden; 
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; 
+
     flex-direction: row;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    background-color: transparent;
+
     height: 220px;
 }
 
 
 .filtersPanel{
-    flex-shrink: 0;
+    /*flex-shrink: 0;
     
     overflow-y: auto;
+    overflow-x: auto;
+    overflow: hidden;
+
+    overflow: hidden;        
+    text-overflow: ellipsis;     
+    white-space: nowrap;         
+    padding-left: 4px;
+    max-width: 100px; 
+
+    padding: 5px 5px 0 10px;*/
+
+    width: 20%;
     padding: 5px 5px 0 10px;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+
 }
 
 .filterTopName, .filterItem{
+
     font-size: 0.6rem;
 }
 
@@ -29,21 +44,56 @@
 }
 
 .filterItem{
+    text-align: start;
     padding-left: 10px;
 }
 
-.cardsTable{
-    overflow-y: auto;
-    overflow-x: auto;
+.searchAndTablePanel{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 80%;
+  
 }
 
-.tableText {
-  text-align: left;
+.searchBox{
+    align-items: center;
+    justify-content: center;
+}
+
+.searchInput{
+    display: block;
+    width: 90%;
+    margin: 4px;
+    font-size: 0.6em;
+}
+
+.cardsTable{
+    /*width: 100%;
+  height: 100%;
+  overflow: hidden;
+    overflow-y: auto;
+    overflow-x: auto;*/
+    flex-grow: 1; /* займає весь доступний простір */
+  overflow: auto;
+  max-height: 400px; /* або будь-яке обмеження по висоті */
+  max-width: 100%;
+}
+
+.tableText, .tableTextCenter  {
   overflow: hidden;        
   text-overflow: ellipsis;     
   white-space: nowrap;         
-  padding-left: 4px;
-  max-width: 200px;            /* обмеження по ширині, якщо потрібно */
+  max-width: 50px;            /* обмеження по ширині, якщо потрібно */
+}
+
+.tableText{
+    padding-left: 4px;
+    text-align: left;
+}
+
+.tableTextCenter{
+    text-align: center;
 }
 
 tr{
@@ -61,3 +111,16 @@ td{
     font-size: 0.6rem;
 }
 
+.triangleIconName{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    height: 15px;
+}
+
+.divForTriange{
+    align-items: center;
+    justify-content: center;
+
+}

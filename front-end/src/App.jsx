@@ -3,6 +3,8 @@ import "./App.css";
 
 import SyncButtons from "./features/sync/SyncButtons"
 
+import ThemeSelector from "./features/themeSelector/ThemeSelector";
+
 import { login, signup, logout, autoLogin } from "./features/authAndForm/authService";
 import LoginForm from "./features/authAndForm/LoginForm";
 
@@ -137,9 +139,10 @@ function App() {
         <div className="modal-overlay">
           <div className="modal">
             <h3>Підтвердження виходу</h3>
-            <p>Після виходу дані з локальної бази (карти та колоди) буде видалено. Продовжити?</p>
-            <div className="modal-buttons">
+            <p>Після виходу дані з локальної бази буде видалено. Продовжити?</p>
+            <div className="modal_buttons">
               <button
+                className="customButton redButton"
                 onClick={async () => {
                   try {
                     await logout();
@@ -154,12 +157,20 @@ function App() {
                     localStorage.removeItem("decks");
                     localStorage.removeItem("cards");
                     localStorage.removeItem("last_selected_deck");
+                    localStorage.removeItem("activity");
+
+                    /*  TODO: hide or delete rendered objects*/ 
                   }
                 }}
               >
                 Так, вийти
               </button>
-              <button onClick={() => setShowLogoutWarning(false)}>Скасувати</button>
+              <button 
+                className="customButton"
+                onClick={() => setShowLogoutWarning(false)}>
+                Скасувати
+              </button>
+              
             </div>
           </div>
         </div>
@@ -191,7 +202,28 @@ function App() {
 
       {/* Header */}
       <header className="header">
-        <div className="site-title">DCRepetify</div>
+        <div className="titleAndSelector">
+          <ThemeSelector />
+          {/*<div className="themeSelector">
+
+            {Object.entries(themes).map(([key, theme]) => (
+              <div
+                key={key}
+                className="themeOption"
+                onClick={() => applyTheme(key)}
+              >
+                <span
+                  className="themeColor"
+                  style={{ backgroundColor: theme["--bg-color"] }}
+                />
+                <span className="themeName">{theme.name}</span>
+              </div>
+            ))}
+          </div>*/}
+
+          <div className="site-title">DCRepetify</div>
+        </div>
+
         <div className="user-info">
           <SyncButtons decks={decks} setDecks={setDecks} cards={cards} setCards={setCards} activity={activity} setActivity={setActivity} />
           

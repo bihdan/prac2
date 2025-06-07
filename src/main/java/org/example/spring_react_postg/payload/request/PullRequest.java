@@ -2,6 +2,7 @@ package org.example.spring_react_postg.payload.request;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.example.spring_react_postg.model.DTO.DeckDTO;
 import org.example.spring_react_postg.model.DTO.DeckUpdateDTO;
 
 import java.time.Instant;
@@ -28,5 +29,13 @@ public class PullRequest {
 
     public void setStatUpdatedAt(Instant statUpdatedAt) {
         this.statUpdatedAt = statUpdatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return  "\nPullRequest{ \n" +
+                "decks:" + decks +
+                "\n, statUpdatedAt='" + statUpdatedAt + '\'' +
+                "}\n";
     }
 }
