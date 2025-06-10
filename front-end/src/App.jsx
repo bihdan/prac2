@@ -1,6 +1,10 @@
 import { useState, useEffect  } from "react";
 import "./App.css";
 
+import "./styles/base.css";
+import "./styles/global.css";
+import "./styles/helpers.css";
+
 import SyncButtons from "./features/sync/SyncButtons"
 
 import ThemeSelector from "./features/themeSelector/ThemeSelector";
@@ -17,6 +21,9 @@ import BrowseBox from "./features/browse/BrowseBox"
 import DetailsOfTheCard from "./features/browse/DetailsOfTheCard"
 
 import StatisticBox from "./features/statistic/StatisticBox"
+
+import enter_icon from "./assets/enter-icon.png"
+import logout_icon from "./assets/logout-icon.png"
 
 function App() {
 
@@ -142,7 +149,7 @@ function App() {
             <p>Після виходу дані з локальної бази буде видалено. Продовжити?</p>
             <div className="modal_buttons">
               <button
-                className="customButton redButton"
+                className="customButton bgCBlockC shadowOnHover"
                 onClick={async () => {
                   try {
                     await logout();
@@ -158,6 +165,7 @@ function App() {
                     localStorage.removeItem("cards");
                     localStorage.removeItem("last_selected_deck");
                     localStorage.removeItem("activity");
+                    localStorage.removeItem("theme");
 
                     /*  TODO: hide or delete rendered objects*/ 
                   }
@@ -166,7 +174,7 @@ function App() {
                 Так, вийти
               </button>
               <button 
-                className="customButton"
+                className="customButton shadowOnHover"
                 onClick={() => setShowLogoutWarning(false)}>
                 Скасувати
               </button>
@@ -230,8 +238,22 @@ function App() {
           {loggedIn ? `${username}` : "Ви не авторизовані"}
           
 
-          <button
-            className="login-button"
+          <img 
+            src={!loggedIn ? enter_icon : logout_icon} 
+            alt=""
+            className="image_button"
+            onClick={() => {
+              if (loggedIn) {
+                setShowLogoutWarning(true);
+              } else {
+                setShowLoginForm(!showLoginForm);
+              }
+            }}
+            role="button"
+          />
+
+          {/*<button
+            className="login_button"
             onClick={() => {
               if (loggedIn) {
                 setShowLogoutWarning(true);
@@ -241,7 +263,7 @@ function App() {
             }}
           >
             {loggedIn ? "Вийти" : "Увійти"}
-          </button>
+          </button>*/}
           
         </div>
       </header>

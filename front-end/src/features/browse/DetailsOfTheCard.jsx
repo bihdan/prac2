@@ -32,8 +32,11 @@ function DetailsOfTheCard({ front, setFront, back, setBack }) { // { card, setca
   return (
     <div className="detailOfTheCard oneOfMainBlock">
       <div className="containers">
-        <span>front</span>
-        <div className="frontContainer">
+        <div className="flexCenter">
+          <div className="blockName">Передня частина</div>
+        </div>
+        
+        <div className="container">
           <div
             contentEditable
             className="fake_input"
@@ -41,23 +44,26 @@ function DetailsOfTheCard({ front, setFront, back, setBack }) { // { card, setca
             suppressContentEditableWarning={true}
             ref={frontRef} 
           />
+        </div>
             
           
-      </div>
 
-      <span>back</span>
-      <div className="backContainer">
 
-        <div
-          contentEditable
-          className="fake_input"
-          onInput={(e) => setBack(e.currentTarget.textContent)}
-          suppressContentEditableWarning={true}
-          ref={backRef}
-        />
-        
+        <div className="flexCenter">
+            <div className="blockName">Задня частина</div>
+          </div>
+        <div className="container">
+
+          <div
+            contentEditable
+            className="fake_input"
+            onInput={(e) => setBack(e.currentTarget.textContent)}
+            suppressContentEditableWarning={true}
+            ref={backRef}
+          />
+
+        </div>
       
-      </div>
         
       </div>
       

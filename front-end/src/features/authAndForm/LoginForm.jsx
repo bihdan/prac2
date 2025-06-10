@@ -105,11 +105,16 @@ return (
         <div className="remember_me">
           <span>Залишатися в системі?</span>
           
-          <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
+          <div className="divForCheckbox">
+            <label className="checkbox-label">
+              <input 
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <span className="custom-checkbox"></span>
+            </label>
+          </div>
           
           
           {/*<label>

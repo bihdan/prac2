@@ -1,0 +1,26 @@
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+
+.fonts06{
+  font-size: 0.6rem;
+}
+
+.flexCenter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.height30px{
+  height: 43px;
+}

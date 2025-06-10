@@ -5,6 +5,7 @@ import org.example.spring_react_postg.model.DTO.CardDTO;
 import org.springframework.stereotype.Component;
 
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ public class CardMapper {
         dto.setDaysJump(card.getDaysJump());
         dto.setEase(card.getEase());
         dto.setUpdatedAt(card.getUpdatedAt());
+        dto.setStudiedAt(card.getStudiedAt());
         dto.setLapses(card.getLapses());
         dto.setReviews(card.getReviews());
         dto.setNotes(card.getNotes());

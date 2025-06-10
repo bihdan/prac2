@@ -1,8 +1,15 @@
 .studyBox{
 
   flex-direction: column;
+
   
 }
+
+.studySettings{
+  height: 220px;
+
+}
+
 
 .deckHeader {
   display: flex;
@@ -22,24 +29,27 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  gap: 20px;
-  flex: 3;
+
 }
 
 .cardTypeBlock {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+
 }
 
-.newCardCheckboxesRow {
+.newCardCheckboxesRow, .familiarCardCheckbox, .dueCardCheckbox {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  padding-left: 20px;
+  padding-left: 10px;
+
+}
+.newCardCheckboxesRow{
   gap: 8px;
 }
+
 
 
 .checkboxes {
@@ -94,30 +104,26 @@
   margin: 5px;
 }
 
-.expantionChech{
+.expantionCheck{
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  padding-left: 20px;
+  padding-left: 10px;
 }
 
 
-.trianle_button{
-  display: block;
-  align-items: center;
-  justify-content: center;
-  width: 12px;
-  height: 12px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
 
-}
 
 
 .expantionOfDateBox{
-  overflow-y: auto;
-  flex-direction: column;
+
+
+  flex-grow: 1; /* займає весь доступний простір */
+  overflow: auto;
+  height: 80px; /* або будь-яке обмеження по висоті */
+  width: 105px;
+  max-width: 100%;
 }
 
 .expantionDate{
@@ -126,20 +132,16 @@
   display: flex;
   flex-direction: row;
   gap: 5px;
-  padding-left: 36px;
+  padding-left: 15px; /* 36 */
 }
 
 .dateDisplay{
-  font-size: 0.8em;
+  font-size: 0.6em;
 }
 
-.hideDiv{
-  visibility: hidden;
-}
 
-.trianle_button.rotate{
-  rotate: 90deg;
-}
+
+
 
 
 .trianle_Fakebutton{
@@ -170,3 +172,5 @@
   padding-left: 35px;
 
 }
+
+

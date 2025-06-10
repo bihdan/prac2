@@ -76,80 +76,22 @@
 
 }
 
-.oneOfMainBlock{
-  height: 220px;
-  
-  background-color: var(--block-color);
-  border: 1px solid var(--text-color);
-  border-radius: 12px;
-}
-
-
-.input {
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-.button {
-  padding: 0.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-
-}
-
-.he{
-  color: var(--text-color);
-}
 
 .customButton{
-  border-radius: 20px;
-  border: none;
-  color: black;
-  background-color: #0da229;
   padding: 4px;
+
+
+  border-radius: 20px;
+  border: 1px solid var(--text-color);
+  
+  color: var(--text-color);
+  background-color: var(--header-color);
+
+
   cursor: pointer;
 }
 
 
-
-
-
-
-
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999; /* поверх усього */
-}
-
-
-.modal{
-  max-width: 400px;
-  margin: 10px auto;
-  padding: 1rem;
-  background: #2c553c;
-  border: 1px solid #271ba9;
-  border-radius: 20px;
-}
-
-.modal_buttons{
-  display: flex;
-  flex-direction: row;
-  gap: 50px;
-  align-items: center;
-  justify-content: center;
-}
-
-
-
-.redButton{
-  background-color: red;
+.bgCBlockC{
+  background-color: var(--block-color);
 }

@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
 
-  /*color: var(--text-color); /* 243025*/
+  background-color: var(--bg-color); /* 243025*/
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

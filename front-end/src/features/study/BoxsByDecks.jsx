@@ -25,15 +25,15 @@ function BoxsByDecks({ decks, cards, deckStats, setDeckStats, onDeskClick}) { //
             </div>
 
             <div className='counters'>
-              <div className={newCards > 0 ? "newCardsCounterBright" : "cardsCounter"}>
+              <div className={newCards > 0 ? "newCardsCounterBright" : ""}>
                 {newCards}
               </div>
 
-              <div className={learnedCards > 0 ? "learnedCardsCounterBright" : "cardsCounter"}>
+              <div className={learnedCards > 0 ? "learnedCardsCounterBright" : ""}>
                 {learnedCards}
               </div>
 
-              <div className={dueCards > 0 ? "dueCardsCounterBright" : "cardsCounter"}>
+              <div className={dueCards > 0 ? "dueCardsCounterBright" : ""}>
                 {dueCards}
               </div>
 

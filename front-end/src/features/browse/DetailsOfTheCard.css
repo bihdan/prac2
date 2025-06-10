@@ -1,40 +1,12 @@
 .detailOfTheCard{
+    width: 100%;
+    height: 160px;
+    
     display: flex;
     flex-direction: column;
 
-    width: 100%;
-    height: 140px;
+    
     overflow: hidden; 
 
 }
 
-.containers{
-    overflow-y: auto;
-    scrollbar-gutter: stable;
-}
-
-.frontContainer,
-.backContainer{
-
-    margin-left: 15px;
-}
-
-
-.fake_input {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 8px;
-  min-height: 20px;
-  width: 80%;
-  font-size: 0.6rem;
-  resize: vertical;
-
-  text-align: start;
-  font-family: inherit;
-  white-space: pre-wrap;
-
-  overflow: hidden;
-  resize: none; /* Забороняє ручне розтягування */
-  display: inline-block;
-  word-break: break-word;
-}

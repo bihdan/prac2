@@ -1,0 +1,61 @@
+.input {
+  padding: 0.5rem;
+  font-size: 1rem;
+
+}
+
+label input[type="checkbox" i]{
+    background-color: var(--header-color);
+    margin: 0;
+}
+
+:checked
+
+
+
+.button {
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+
+}
+
+.he{
+  color: var(--text-color);
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--block-color);
+}
+
+
+
+tr{
+    cursor: pointer;
+}
+
+th{
+    font-size: 0.6rem;
+    background-color: var(--header-color);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+td{
+    font-size: 0.6rem;
+}

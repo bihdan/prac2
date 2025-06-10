@@ -2,8 +2,8 @@
   max-width: 400px;
   margin: 10px auto;
   padding: 1rem;
-  background: #c8fbdc;
-  border: 1px solid #271ba9;
+  background: var(--bg-color);
+  border: 1px solid var(--text-color);
   border-radius: 20px;
 }
 
@@ -30,24 +30,27 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: bold;
-  background-color: #c8fbdc;
-  color: #32a962;
+  background-color: var(--header-color);
+  color: var(--text-color);
 }
 
-.submit_active {
-  background-color: #87fcb6;
-  color: #32a962;
-  padding: 5px 25px;
-  border: thin;
-  border-color: #32a962;
+.submit_active:hover {
+  background-color: var(--block-color);
+
 }
+
+.submit_unactive:hover {
+  background-color: var(--block-color);
+
+}
+
 
 .input, 
 .animated-email {
   display: flex;
   align-items: center;
   position: relative;
-  background: #87fcb6;
+  background: var(--block-color);
   border: none;
   outline: none;
   margin-bottom: 5px;
@@ -78,7 +81,7 @@
   background: transparent;
   border: none;
   outline: none;
-  color: #32a962;
+  color: var(--text-color);
 }
 
 .remember_me{
@@ -89,26 +92,24 @@
 
 .remember_me span{
   font-size: 0.8rem;
-  color: #32a962;
+
 }
 
-.remember_me input{
-  color: #32a962;
-  accent-color: #32a962;
-}
+
 
 .login__submit_button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #87fcb6;
-  color: #32a962;
+  background-color: var(--header-color);
+  color: var(--text-color);
   border: solid;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .login__submit_button:hover {
-  background-color: #34ff85;
+  background-color: var(--block-color);
+
 }
 
 

@@ -12,7 +12,7 @@
 }
 
 .pushButton, .pullButton{
-  border: 2px solid var(--text-color);
+  border: 1px solid var(--text-color);
   border-radius: 10px;
   background-color: transparent;
 }
@@ -20,13 +20,12 @@
 .pushButton.hasChanges {
   background-color: #61173d;;
   border-color: #91225b;
-  box-shadow: 0 0 8px rgba(145, 34, 91, 0.5);
+
 }
 
 .pullButton.hasUpload {
   background-color: #174c61;;
   border-color: rgb(45, 199, 194);
-  box-shadow: 0 0 8px rgba(45, 199, 194, 0.502);
 }
 
 

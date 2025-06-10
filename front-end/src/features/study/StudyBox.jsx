@@ -2,6 +2,8 @@ import { useState, useEffect, useRef  } from "react";
 import "./StudyBox.css";
 import back_icon from "../../assets/back-icon.png"
 import trianle_icon from "../../assets/trianle-icon.png"
+import study_icon from "../../assets/study-icon.png"
+
 
 function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
   
@@ -48,36 +50,84 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
   const [familiarExpantion, setFamiliarExpantion] = useState(false);
   const [dueExpantion, setDueExpantion] = useState(false);
 
-  const toggleDate = (date) => {
-    const newSelected = { ...selectedNewDates, [date]: !selectedNewDates[date] };
-    setSelectedNewDates(newSelected);
-
-    // якщо хоч один false → відключаємо expansion
-    const allChecked = Object.values(newSelected).every(v => v);
-    if (!allChecked) {
-      setIncludeNew(false); // або setNewExpantion(false) якщо бажано
+  
+  
+  /*useEffect(() => {
+    if (!includeNew) {
+ 
+      setSelectedNewDates({});
+      setIncludeNewAlt(false); // якщо треба — скидаємо режим 1.1
+      parentCheckboxRef.current = false;
     }
-  };
+  }, [includeNew]);*/
   
-  
-  const parentCheckboxRef = useRef(null);
-
+  const parentNewCheckboxRef = useRef(null);
   useEffect(() => {
-    if (!parentCheckboxRef.current) return;
+    if (!parentNewCheckboxRef.current) return;
+    if (!queueDateAndcountOfNew && !selectedNewDates) return;
 
     const allDates = Object.keys(queueDateAndcountOfNew);
     const selectedDates = Object.keys(selectedNewDates);
 
+    console.log("selectedDates & allDates",selectedDates.length, allDates.length);
+    
     if (allDates.length === 0 || selectedDates.length === 0) {
-      parentCheckboxRef.current.indeterminate = false;
-      parentCheckboxRef.current.checked = false;
+      parentNewCheckboxRef.current.indeterminate = false;
+      parentNewCheckboxRef.current.checked = false;
     } else if (selectedDates.length === allDates.length) {
-      parentCheckboxRef.current.indeterminate = false;
-      parentCheckboxRef.current.checked = true;
+      parentNewCheckboxRef.current.indeterminate = false;
+      parentNewCheckboxRef.current.checked = true;
     } else {
-      parentCheckboxRef.current.indeterminate = true;
-      parentCheckboxRef.current.checked = false;
+      parentNewCheckboxRef.current.indeterminate = true;
+      parentNewCheckboxRef.current.checked = false;
     }
+    console.log("indeterminate & checked",parentNewCheckboxRef.current.indeterminate, parentNewCheckboxRef.current.checked);
+
+  }, [selectedNewDates, queueDateAndcountOfNew]);
+
+  const parentFamiliarCheckboxRef = useRef(null);
+  useEffect(() => {
+    if (!parentFamiliarCheckboxRef.current) return;
+    if (!queueDateAndcountOfFamiliar) return;
+    if (!selectedFamiliarDates) return;
+
+    const allDates = Object.keys(queueDateAndcountOfFamiliar);
+    const selectedDates = Object.keys(selectedFamiliarDates);
+
+    if (allDates.length === 0 || selectedDates.length === 0) {
+      parentFamiliarCheckboxRef.current.indeterminate = false;
+      parentFamiliarCheckboxRef.current.checked = false;
+    } else if (selectedDates.length === allDates.length) {
+      parentFamiliarCheckboxRef.current.indeterminate = false;
+      parentFamiliarCheckboxRef.current.checked = true;
+    } else {
+      parentFamiliarCheckboxRef.current.indeterminate = true;
+      parentFamiliarCheckboxRef.current.checked = false;
+    }
+    
+  }, [selectedNewDates, queueDateAndcountOfNew]);
+
+  const parentDueCheckboxRef = useRef(null);
+  useEffect(() => {
+    if (!parentDueCheckboxRef.current) return;
+    if (!queueDateAndcountOfDue) return;
+    if (!selectedDueDates) return;
+
+
+    const allDates = Object.keys(queueDateAndcountOfDue);
+    const selectedDates = Object.keys(selectedDueDates);
+
+    if (allDates.length === 0 || selectedDates.length === 0) {
+      parentDueCheckboxRef.current.indeterminate = false;
+      parentDueCheckboxRef.current.checked = false;
+    } else if (selectedDates.length === allDates.length) {
+      parentDueCheckboxRef.current.indeterminate = false;
+      parentDueCheckboxRef.current.checked = true;
+    } else {
+      parentDueCheckboxRef.current.indeterminate = true;
+      parentDueCheckboxRef.current.checked = false;
+    }
+    
   }, [selectedNewDates, queueDateAndcountOfNew]);
 
 
@@ -108,6 +158,22 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
   useEffect(() => {
     if (selectedDeckId) {
       setIsSetting(true);
+
+      setQueueOfNew([]);
+      setQueueOfFamiliar([]);
+      setQueueOfDue([]);
+
+      setQueueDateAndcountOfNew([]);
+      setQueueDateAndcountOfFamiliar([]);
+      setQueueDateAndcountOfDue([]);
+
+      setSelectedNewDates({});
+      setSelectedFamiliarDates({});
+      setSelectedDueDates({});
+
+
+
+
       setDeck(decks?.find(d => d.id === selectedDeckId));
       setStats(deckStats?.[selectedDeckId] || { new: 0, familiar: 0, due: 0 });
 
@@ -135,22 +201,103 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
 
       }
 
-      const countByDate = queueOfNew.reduce((acc, card) => {
-        acc[card.createdAt.slice(0, 10)] 
-        = (acc[card.createdAt.slice(0, 10)] || 0) + 1;
+      const newCountByDate = queueOfNew.reduce((acc, card) => {
+        const temp = card.createdAt; // card.modifiedAt ?? card.updatedAt ?? 
+        const sliced = temp.slice(0, 10);
+        acc[sliced] = (acc[sliced] || 0) + 1;
         return acc;
       }, {});
-      
-      setQueueDateAndcountOfNew(countByDate);
+      setQueueDateAndcountOfNew(newCountByDate);
+
+      const familiarCountByDate = queueOfNew.reduce((acc, card) => {
+        if(!card.studiedAt) return;
+
+        const temp = card.studiedAt;
+        
+        const sliced = new Date(card.studiedAt).toLocaleDateString().slice(0, 10);
+
+        acc[sliced] = (acc[sliced] || 0) + 1;
+        return acc;
+      }, {});
+      setQueueDateAndcountOfFamiliar(familiarCountByDate);
+
+      const dueCountByDate = queueOfNew.reduce((acc, card) => {
+        if(!card.endDate) return;
+        
+        const temp = card.endDate;
+        //const sliced = temp.slice(0, 10);
+        acc[temp] = (acc[temp] || 0) + 1;
+        return acc;
+      }, {});
+      setQueueDateAndcountOfDue(dueCountByDate);
 
     }
   }, [selectedDeckId]);
 
 
+  const toggleDate = (date, selectedDates, setSelectedDates) => { //setExpansion
+    /*const newSelected = { ...selectedDates, [date]: !selectedDates[date] };
+    setSelectedDates(newSelected);*/
 
+    const newDates = { ...selectedDates };
+
+    if (newDates[date]) {
+      delete newDates[date]; 
+    } else {
+      newDates[date] = true;
+    }
+
+    setSelectedDates(newDates);
+    /*const allChecked = Object.values(newSelected).every(v => v);
+    if (!allChecked) {
+      //setExpansion(false);
+      expansion = false;
+    }*/
+  };
+
+  const toggleParentCheckbox = (selectedDate, setSelectedDates, queueDateAndcount) => {
+    const totalDates = Object.keys(queueDateAndcount).length;
+    const selectedCount = Object.keys(selectedDate).length;
+
+    const allSelected = selectedCount === totalDates;
+
+    if (allSelected) {
+
+      setSelectedDates({});
+    } else {
+
+      const allDates = {};
+      Object.keys(queueDateAndcount).forEach(date => {
+        allDates[date] = true;
+      });
+      setSelectedDates(allDates);
+    }
+  /*if (!parentRef.current) return;
+
+    const isChecked = parentRef.current.checked;
+    const isIndeterminate = parentRef.current.indeterminate;
+    console.log(isChecked, isIndeterminate);
+    if (isIndeterminate || isChecked) {
+      // Зняти всі чекбокси (анчек)
+      setSelectedDates({});
+    } else {
+      // Встановити всі чекбокси (чек)
+      const allDates = {};
+      Object.keys(queueDateAndcount).forEach(date => {
+        allDates[date] = true;
+      });
+      console.log(allDates);
+      setSelectedDates(allDates);
+    }
+    const allChecked = Object.values(newSelected).every(v => v);
+    if (!allChecked) {
+      //setExpansion(false);
+      expansion = false;
+    }*/
+  };
 
   const handleStartStudy = () => {
-    if (includeNew || includeNewAlt || includeFamiliar || includeDue) {
+    if ((includeNew && selectedNewDates.length != 0) || (includeFamiliar && selectedFamiliarDates.length != 0) || (includeDue && selectedDueDates.length != 0)) {
       const newQueue = generateStudyQueue(cards, {
         includeNew,
         includeFamiliar,
@@ -183,16 +330,37 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
     const queue = [];
 
     for (const card of cards) {
-      const isNew = card.daysJump === -1;
-      const isFamiliar = card.daysJump === 0;
-      const isDue =
-        typeof card.daysJump === "number" &&
-        card.daysJump >= 0 &&
-        card.endDate &&
-        new Date(card.endDate) <= now;
       
+      if (card.deckId !== selectedDeckId) continue;
 
-      if (includeNew && isNew && se) {
+      const isFilteredDue =
+        card.daysJump > 0 &&
+        selectedDueDates[card.endDate];
+        /*card.daysJump >= 0 &&
+        card.endDate &&
+        new Date(card.endDate) <= now*/
+
+      if (includeDue && isFilteredDue) {
+        queue.push({ ...card, dueInSession: true });
+        continue;
+      }
+
+      
+      const isFilteredFamiliar = card.daysJump === 0 && 
+      selectedFamiliarDates[new Date(card.studiedAt).toLocaleDateString().slice(0, 10)];
+
+      if (includeFamiliar && isFilteredFamiliar) {
+        queue.push({ ...card, dueInSession: true });
+        continue;
+      }
+      
+      
+      const isFilteredNew = card.daysJump === -1 && 
+      selectedNewDates[card.createdAt.slice(0, 10)];
+
+
+
+      if (includeNew && isFilteredNew) {
         queue.push({ ...card, dueInSession: true });
         continue;
       }
@@ -202,15 +370,8 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
         continue;
       }
 
-      if (includeFamiliar && isFamiliar) {
-        queue.push({ ...card, dueInSession: true });
-        continue;
-      }
 
-      if (includeDue && isDue) {
-        queue.push({ ...card, dueInSession: true });
-        continue;
-      }
+      
     }
 
     return queue;
@@ -302,7 +463,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
       const updated = {
         ...prev,
         [today]: {
-          added: (prev[today]?.added || 0) + 1,
+          added: prev[today]?.added || 0,
           reviewed: prev[today]?.reviewed || 0,
           time: (prev[today]?.time || 0) + duration,
           unsynchronised: -1,
@@ -323,12 +484,12 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
     <div className="studyBox oneOfMainBlock">
 
       {isSetting && ( 
-        <div className="study-settings">
+        <div className="studySettings" >
           <div className="deckHeader">
             <div className="deckNameContainer">
               <div 
-              className="deckName"
-              style={{maxWidth: 100 + "px"}}
+                className="deckName"
+                style={{maxWidth: 100 + "px"}}
               >{deck.name}</div>
             </div>
 
@@ -339,41 +500,50 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
                 <div> 
                   <div 
                     className={`leftSpace ${stats.new > 0 ? "newCardsCounterBright" : "cardsCounter"}`}
-                    
-                    >
+                  >
                     {stats.new}
                   </div>
                 </div>
                 <div className="newCardCheckboxesRow">
 
-                  <div className="tooltip-wrapper">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={includeNew}
-                        onChange={() => {
-                          const newValue = !includeNew;
+                  <div className="divForCheckbox">
 
-                          setIncludeNew(newValue);
-                          setIncludeNewAlt(newValue);
-                          
-                        }}
-                      /> 
-                    </label>
-                    <div className="tooltip-text">Режим 1</div>  
+                    <div className="tooltip-wrapper">
+                      <label className="checkbox-label">
+                        <input 
+                          type="checkbox"
+                          checked={includeNew}
+                          disabled={stats.new === 0}
+                          onChange={() => {
+                            const newValue = !includeNew;
+
+                            setIncludeNew(newValue);
+                            //setIncludeNewAlt(newValue);
+                            
+                          }}
+                        />
+                        <span className="custom-checkbox"></span>
+                      </label>
+
+                      <div className="tooltip-text">Режим 1</div>  
+                    </div>
                   </div>
 
-                  <div className="tooltip-wrapper">
-                    <label>
-                      <input
-                        type="checkbox"
-                        /*className={`${!includeNewAlt? "inactive": ""} `}*/
-                        checked={includeNewAlt}
-                        onChange={() => setIncludeNewAlt(!includeNewAlt)}
-                        disabled={!includeNew}
-                      />
-                    </label>
-                    <div className="tooltip-text">Режим 1.1</div>  
+                  <div className="divForCheckbox">
+
+                    <div className="tooltip-wrapper">
+                      <label className="checkbox-label">
+                        <input 
+                          type="checkbox"
+                          /*className={`${!includeNewAlt? "inactive": ""} `}*/
+                          checked={includeNewAlt}
+                          onChange={() => setIncludeNewAlt(!includeNewAlt)}
+                          disabled={!includeNew} 
+                        />
+                        <span className="custom-checkbox"></span>
+                      </label>
+                      <div className="tooltip-text">Режим 1.1</div>  
+                    </div>
                   </div>
                 </div>
 
@@ -382,34 +552,31 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
 
 
 
-                <div className="expantionChech">
+                <div className="expantionCheck">
                   <div className="divForCheckbox">
-                    <label>
-                        <input
-                        type="checkbox"
-                        ref={parentCheckboxRef}
-                        /*className={`${!includeNew? "inactive": ""} `}*/
-                        disabled={!includeNew}
-                        onChange={() => {
-                          if (!newValue) {
-                            setSelectedNewDates({});
-                          } else {
-                            // Увімкнути всі дати за замовчуванням
-                            const allDates = {};
-                            Object.keys(queueDateAndcountOfNew).forEach(date => {
-                              allDates[date] = true;
-                            });
-                            setSelectedNewDates(allDates);
-                          }
-                        }}
+                    <label className="checkbox-label">
+                        <input 
+                          type="checkbox"
+                          ref={parentNewCheckboxRef}
 
-                      />
+                          disabled={!includeNew}
+
+                          onChange={() => {
+                            toggleParentCheckbox(
+
+                              selectedNewDates, 
+                              setSelectedNewDates, 
+                              queueDateAndcountOfNew)
+                            }
+                          }
+                          />
+                        <span className="custom-checkbox"></span>
                     </label>
                   </div>
                   <div className="divForTriange">
                     <img 
                       src={trianle_icon}
-                      className={`back_button trianle_button ${!newExpantion ? "" : "rotate"} `}
+                      className={`trianle_button ${!newExpantion ? "" : "rotate"} `}
                       
                       alt="Розширити вибір дат" 
                       onClick={() => {
@@ -418,40 +585,41 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
                       }}
                       role="button"
 
-                      disabled={!includeNew}
                     />
                   </div>
-                  {/*<button 
-                    className={`back_button trianle_Fakebutton ${!newExpantion ? "" : "rotate"} `}
-                    onClick={() => {
-                      newExpantion? setNewExpantion(false): setNewExpantion(true) ;
-
-                    }}
-                    disabled={!includeNew}
-                  >
-                  ▷
-                  </button>*/}
+                  
                   
                 </div>
                 <div 
-                  className={`expantionOfDateBox  ${!newExpantion ? "hideDiv" : ""}`}
+                  className={`expantionOfDateBox  ${!newExpantion ? "hidden" : "visible"}`}
                   /*style={`${newExpantion ?  "visible: hidden" : ""}`}*/>
 
-                  {Object.entries(queueDateAndcountOfNew).map(([date, count]) => (
+                  {queueDateAndcountOfNew &&
+                  Object.keys(queueDateAndcountOfNew).length > 0 &&
+                  Object.entries(queueDateAndcountOfNew).map(([date, count]) => (
                     <div 
                       /*className={`expantionDate ${!includeNew? "inactive": ""} `} */
                       className="expantionDate"
-                      key={date}>
-                        
-                        <input
-                          type="checkbox"
-                          checked={selectedNewDates[date] || false}
-                          onChange={() => toggleDate(date)}
-                        />
+                      key={date}
+                    >
+                      <div className="divForCheckbox">
+                        <label className="checkbox-label">
+                          <input 
+                            type="checkbox"
 
-                        <span className="dateDisplay">{date}</span>
-                        <span className="dateCount">({count})</span>
+                            checked={selectedNewDates[date] || false}
+
+                            disabled={!includeNew}
+
+                            onChange={() => toggleDate(date, selectedNewDates, setSelectedNewDates)} />
+                          <span className="custom-checkbox"></span>
+                        </label>
                       </div>
+
+
+                      <span className="dateDisplay">{date.slice(2, 10)}</span>
+                      <span className="dateDisplay dateCount">({count})</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -463,50 +631,98 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
                 </div>
                 
 
-                <div className="tooltip-wrapper">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={includeFamiliar}
-                      onChange={() => setIncludeFamiliar(!includeFamiliar)}
-                    />
-                  </label>
-                  <div className="tooltip-text">Режим 2</div>  
+                <div className="familiarCardCheckbox">
+                  <div className="divForCheckbox">
+                    <div className="tooltip-wrapper">
+                    
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          disabled={stats.familiar === 0}
+                          checked={includeFamiliar}
+                          onChange={() => {
+                              const newValue = !includeFamiliar;
+
+                              setIncludeFamiliar(newValue);
+                            }}
+                        />
+                        <span className="custom-checkbox"></span>
+                      </label>
+
+                      <div className="tooltip-text">Режим 2</div>  
+                    </div>
+                  </div>
                 </div>
 
-                <div className="expantionChech">
-                  <input
-                    type="checkbox"
-                    
-                  />
-                  <img 
-                    src={trianle_icon}
-                    className={`back_button trianle_button ${familiarExpantion ? "inactive" : ""}`}
-                
-                    alt="Розширити вибір дат" 
-                    onClick={() => {
-                      familiarExpantion? setFamiliarExpantion(false): setFamiliarExpantion(true) ;
+                <div className="expantionCheck">
+                  <div className="divForCheckbox">
+                    <label className="checkbox-label">
+                        <input 
+                          type="checkbox"
+                          ref={parentFamiliarCheckboxRef}
 
-                    }}
-                    role="button"
-                  />
+                          disabled={!includeFamiliar}
+
+                          onChange={() => {
+                            toggleParentCheckbox(
+
+                              selectedFamiliarDates, 
+                              setSelectedFamiliarDates, 
+                              queueDateAndcountOfFamiliar)
+                            }
+                          }
+                          />
+                        <span className="custom-checkbox"></span>
+                    </label>
+                  </div>
+
+                  <div className="divForTriange">
+                    <img 
+                      src={trianle_icon}
+                      className={`trianle_button ${!familiarExpantion ? "" : "rotate"} `}
+                      
+                      alt="Розширити вибір дат" 
+                      onClick={() => {
+                        familiarExpantion? setFamiliarExpantion(false): setFamiliarExpantion(true) ;
+
+                      }}
+                      role="button"
+
+                    />
+                  </div>
+
+                  
                   
                 </div>
                 <div
-                  className={`expantionOfDateBox  ${familiarExpantion ? "inactive" : ""}`}
+                  className={`expantionOfDateBox  ${familiarExpantion ? "hidden" : "visible"}`}
                   /*style={`${newExpantion ?  "visible: hidden" : ""}`}*/>
 
-                  {Object.entries(queueDateAndcountOfFamiliar).map(([date, count]) => (
+                  {queueDateAndcountOfFamiliar &&
+                  Object.keys(queueDateAndcountOfFamiliar).length > 0 &&
+                  Object.entries(queueDateAndcountOfFamiliar).map(([date, count]) => (
                     <div className="expantionDate"  key={date}>
                         
-                        <input
-                          type="checkbox"
-                          
-                        />
+                      <div className="divForCheckbox">
+                        <label className="checkbox-label">
+                          <input 
+                            type="checkbox"
 
-                        <span className="dateDisplay">{date}</span>
-                        <span>({count})</span>
+                            checked={selectedFamiliarDates[date] || false}
+
+                            disabled={!includeFamiliar}
+
+                            onChange={() => toggleDate(date, selectedFamiliarDates, setSelectedFamiliarDates)} />
+                          <span className="custom-checkbox"></span>
+                        </label>
                       </div>
+
+
+                      <span className="dateDisplay">{date.slice(2, 10)}</span>
+                      <span className="dateDisplay dateCount">({count})</span>
+                        
+                      
+                    </div>
                   ))}
                 </div>
           
@@ -519,50 +735,96 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
                 </div>
                 
 
-                <div className="tooltip-wrapper">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={includeDue}
-                      onChange={() => setIncludeDue(!includeDue)}
-                    />
-                  </label>
-                  <div className="tooltip-text">Режим 3</div>  
+                <div className="dueCardCheckbox">
+                  <div className="divForCheckbox">
+                    <div className="tooltip-wrapper">
+                    
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          disabled={stats.due === 0}
+                          checked={includeDue}
+                          onChange={() => {
+                              const newValue = !includeDue;
+
+                              setIncludeDue(newValue);
+                            }}
+                        />
+                        <span className="custom-checkbox"></span>
+                      </label>
+
+                      <div className="tooltip-text">Режим 3</div>  
+                    </div>
+                  </div>
                 </div>
 
-                <div className="expantionChech">
-                  <input
-                    type="checkbox"
-                    
-                  />
-                  <img 
-                    src={trianle_icon}
-                    className={`back_button trianle_button ${!dueExpantion ? "inactive" : ""}`}
-                
-                    alt="Розширити вибір дат" 
-                    onClick={() => {
-                      dueExpantion? setDueExpantion(false): setDueExpantion(true) ;
+                <div className="expantionCheck">
+                  <div className="divForCheckbox">
+                    <label className="checkbox-label">
+                        <input 
+                          type="checkbox"
+                          ref={parentDueCheckboxRef}
 
-                    }}
-                    role="button"
-                  />
+                          disabled={!includeDue}
+
+                          onChange={() => {
+                            toggleParentCheckbox(
+
+                              selectedDueDates, 
+                              setSelectedDueDates, 
+                              queueDateAndcountOfDue)
+                            }
+                          }
+                          />
+                        <span className="custom-checkbox"></span>
+                    </label>
+                  </div>
+                  <div className="divForTriange">
+                    <img 
+                      src={trianle_icon}
+                      className={`trianle_button ${!dueExpantion ? "" : "rotate"} `}
+                      
+                      alt="Розширити вибір дат" 
+                      onClick={() => {
+                        dueExpantion? setDueExpantion(false): setDueExpantion(true) ;
+
+                      }}
+                      role="button"
+
+                    />
+                  </div>
+                  
                   
                 </div>
                 <div
-                  className={`expantionOfDateBox  ${!dueExpantion ? "inactive" : ""}`}
+                  className={`expantionOfDateBox  ${!dueExpantion ? "hidden" : "visible"}`}
                   /*style={`${newExpantion ?  "visible: hidden" : ""}`}*/>
 
-                  {Object.entries(queueDateAndcountOfDue).map(([date, count]) => (
+                  {queueDateAndcountOfDue &&
+                  Object.keys(queueDateAndcountOfDue).length > 0 &&
+                  Object.entries(queueDateAndcountOfDue).map(([date, count]) => (
                     <div className="expantionDate"  key={date}>
                         
-                        <input
-                          type="checkbox"
-                          
-                        />
+                      <div className="divForCheckbox">
+                        <label className="checkbox-label">
+                          <input 
+                            type="checkbox"
 
-                        <span className="dateDisplay">{date}</span>
-                        <span>({count})</span>
+                            checked={selectedDueDates[date] || false}
+
+                            disabled={!includeDue}
+
+                            onChange={() => toggleDate(date, selectedDueDates, setSelectedDueDates)} />
+                          <span className="custom-checkbox"></span>
+                        </label>
                       </div>
+
+
+                      <span className="dateDisplay">{date.slice(2, 10)}</span>
+                      <span className="dateDisplay dateCount">({count})</span>
+                        
+                      
+                    </div>
                   ))}
                 </div>
 
@@ -570,12 +832,16 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
             </div>
           </div>
 
+          <div>
+            <img
+              src={study_icon}
+              className="image_button"
+              onClick={handleStartStudy}
+              style={{height: 40 + "px", width: 40 + "px"}}
+            />
+          </div>   
+          
 
-          <button 
-          className="customButton"
-          onClick={handleStartStudy}>
-            Почати навчання
-          </button>
         </div>
       )}
 

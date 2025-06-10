@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./CreatingBox.css";
 import flashdeck_icon from "../../assets/flash-deck.png"
 import flashcard_icon from "../../assets/flash-card.png"
@@ -14,8 +14,18 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
   const [back, setBack] = useState("");
   const [backError, setBackError] = useState(false);
   
-
   const [selectedDeck, setSelectedDeck] = useState("");
+
+  const divFrontRef = useRef(null);
+  const divBackRef = useRef(null);
+  const divDeckNameRef = useRef(null);
+
+  const clearText = (ref) => {
+    if (ref.current) {
+      ref.current.textContent = "";
+    }
+  };
+
 
   useEffect(() => {
     const lastDeckId = localStorage.getItem("last_selected_deck");
@@ -72,7 +82,8 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
       unsynchronised: -1,
       modifiedAt : createdAt,
       updatedAt: null,
-      createdAt: createdAt
+      createdAt: createdAt,
+      studiedAt: null
     };
 
     localStorage.setItem("last_selected_deck", selectedDeck);
@@ -80,6 +91,10 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
     const updatedCards = [...cards, newCard];
     setCards(updatedCards);
     localStorage.setItem("cards", JSON.stringify(updatedCards));
+
+    clearText(divFrontRef);
+    clearText(divBackRef);
+
     setFront("");
     setBack("");
 
@@ -144,7 +159,11 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
     setDecks(updatedDecks);
 
     localStorage.setItem("decks", JSON.stringify(updatedDecks));
+    
+    clearText(divDeckNameRef);
+
     setDeckName("");
+    
   };
 
   function incrementAddedStatToday() {
@@ -184,50 +203,76 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
         {/* Створення картки */}
         <div className="creating-card oneOfMainBlock">
           <div className="top">
-              <div className="top-text">Нова картка</div>
+            <div className="top-text">Нова картка</div>
 
-              <select 
-              className="deck_select"
-              value={selectedDeck}
-              onChange={(e) => setSelectedDeck(e.target.value)}>
-                  
-                  {decks.map((deck) => (
-                      <option key={deck.id} value={deck.id}>
-                      {deck.name}
-                      </option>
-                  ))}
-              </select>
+            <select 
+            className="deck_select"
+            value={selectedDeck}
+            onChange={(e) => setSelectedDeck(e.target.value)}>
+                
+                {decks.map((deck) => (
+                    <option key={deck.id} value={deck.id}>
+                    {deck.name}
+                    </option>
+                ))}
+            </select>
 
-              <img 
-                  src={flashcard_icon}
-                  className="image_button"
-                  alt="Додати картку" 
-                  onClick={handleCreateCard}
-                  role="button"
-              />
+            <img 
+                src={flashcard_icon}
+                className="image_button"
+                alt="Додати картку" 
+                onClick={handleCreateCard}
+                role="button"
+            />
           </div>
 
-          <input
-            type="text"
-            value={front}
-            onChange={(e) => setFront(e.target.value)}
 
-            onFocus={() => setFrontError(false)}
-            className={`text_side ${frontError ? "input-error" : ""}`}
-            placeholder={frontError ? "Поле не може бути порожнім" : "Передня сторона"}
-          />
+          <div className="containers">
 
-          <input
-            type="text"
-            value={back}
-            onChange={(e) => setBack(e.target.value)}
-            className="text_side"
-            placeholder="Задня сторона"
-          />
+            
+            <div className="container height30px">
+              <div
+                ref={divFrontRef}
+                className={`fake_input ${frontError ? "input-error" : ""}`}
+
+                
+                onInput={(e) => setFront(e.currentTarget.textContent)}
+                onFocus={() => setFrontError(false)}
+                
+                contentEditable
+                suppressContentEditableWarning={true}
+                
+                data-placeholder={frontError ? "Поле не може бути порожнім" : "Передня сторона"}
+                 
+              />
+
+            </div>
+                
+            
+            <div className="container height30px">
+
+              <div
+                ref={divBackRef}
+                className={`fake_input ${backError ? "input-error" : ""}`}
+
+                onInput={(e) => setBack(e.currentTarget.textContent)}
+                onFocus={() => setBackError(false)}
+
+                contentEditable
+                suppressContentEditableWarning={true}
+
+                data-placeholder="Задня сторона"
+                
+              />
+
+            </div>
+      
+        
+      </div>
 
         </div>
 
-        {/* Створення колоди */}
+        {/* kолоди */}
         <div className="creating-deck oneOfMainBlock">
 
           <div className="top">
@@ -240,16 +285,25 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
                   onClick={handleCreateDeck}
                   role="button"
               />
-          </div>
+            </div>
 
-          <input
-            type="text"
-            value={deckName}
-            onChange={(e) => setDeckName(e.target.value)}
-            onFocus={() => setDeckNameError(false)}
-            className={`text_side ${deckNameError ? "input-error" : ""}`}
-            placeholder={deckNameError ? "Назва не може бути порожньою" : "Назва колоди"}
-          />
+            <div className="container height30px">
+
+              <div
+
+                ref={divDeckNameRef}
+                className={`fake_input ${deckNameError ? "input-error" : ""}`}
+                
+                onInput={(e) => setDeckName(e.currentTarget.textContent)}
+                onFocus={() => setDeckNameError(false)}
+
+                contentEditable
+                suppressContentEditableWarning={true}
+ 
+                data-placeholder={deckNameError ? "Назва не може бути порожньою" : "Назва колоди"}
+              />
+                
+            </div>
 
         </div>
 

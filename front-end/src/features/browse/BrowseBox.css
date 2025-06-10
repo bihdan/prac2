@@ -32,8 +32,16 @@
     overflow-y: auto;
 
 }
+.filterItemBlock{
+    display: flex;
+    flex-direction: row;
 
-.filterTopName, .filterItem{
+    padding-left: 10px;
+
+    cursor: pointer;
+}
+
+.filterTopName, .ItemName{
 
     font-size: 0.6rem;
 }
@@ -43,9 +51,9 @@
     text-align: left;
 }
 
-.filterItem{
+.ItemName{
     text-align: start;
-    padding-left: 10px;
+
 }
 
 .searchAndTablePanel{
@@ -66,6 +74,9 @@
     width: 90%;
     margin: 4px;
     font-size: 0.6em;
+    background-color: var(--header-color);
+    color: var(--text-color);
+    border: 1px solid transparent;
 }
 
 .cardsTable{
@@ -75,9 +86,9 @@
     overflow-y: auto;
     overflow-x: auto;*/
     flex-grow: 1; /* займає весь доступний простір */
-  overflow: auto;
-  max-height: 400px; /* або будь-яке обмеження по висоті */
-  max-width: 100%;
+    overflow: auto;
+    max-height: 400px; /* або будь-яке обмеження по висоті */
+    max-width: 100%;
 }
 
 .tableText, .tableTextCenter  {
@@ -96,20 +107,6 @@
     text-align: center;
 }
 
-tr{
-    cursor: pointer;
-}
-
-th{
-    font-size: 0.6rem;
-    background-color: #2a2a2a;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-td{
-    font-size: 0.6rem;
-}
 
 .triangleIconName{
     display: flex;

@@ -75,6 +75,20 @@ function ThemeSelector() {
             "--block-color": "#535C91",
             "--text-color": "#9290C3",
         },
+        hs: {
+            name: "hs",
+            "--bg-color": "#222831",
+            "--header-color": "#00ADB5",
+            "--block-color": "#393E46",
+            "--text-color": "#EEEEEE",
+        },
+        redSummer: {
+            name: "redSummer",
+            "--bg-color": "#FFD1D1",
+            "--header-color": "#FFE3E1",
+            "--block-color": "#FFF5E4",
+            "--text-color": "#FF9494",
+        },
         
     };
 

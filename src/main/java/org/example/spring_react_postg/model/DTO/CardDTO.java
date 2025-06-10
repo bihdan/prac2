@@ -19,6 +19,7 @@ public class CardDTO {
     private Integer daysJump;
     private Integer ease;
     private Instant updatedAt;
+    private Instant studiedAt;
     private Integer lapses;
     private Integer reviews;
     private String notes;
@@ -33,6 +34,7 @@ public class CardDTO {
         this.daysJump = card.getDaysJump();
         this.ease = card.getEase();
         this.updatedAt = card.getUpdatedAt();
+        this.studiedAt = card.getStudiedAt();
         this.lapses = card.getLapses();
         this.reviews = card.getReviews();
         this.notes = card.getNotes();
@@ -108,6 +110,14 @@ public class CardDTO {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Instant getStudiedAt() {
+        return studiedAt;
+    }
+
+    public void setStudiedAt(Instant studiedAt) {
+        this.studiedAt = studiedAt;
     }
 
     public Integer getLapses() {

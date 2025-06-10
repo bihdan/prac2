@@ -82,6 +82,9 @@ public class Card {
     @Column(nullable = false)
     private Instant updatedAt;
 
+    @Column(nullable = true)
+    private Instant studiedAt;
+
     @Column(nullable = false)
     private Integer lapses; // кількість помилок при навчанні- "again - 10"
 
@@ -102,6 +105,7 @@ public class Card {
         this.daysJump = dto.getDaysJump();
         this.ease = dto.getEase();
         this.updatedAt = dto.getUpdatedAt();
+        this.studiedAt = dto.getStudiedAt();
         this.lapses = dto.getLapses();
         this.reviews = dto.getReviews();
         this.notes = dto.getNotes();
@@ -115,6 +119,14 @@ public class Card {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getDeckId() {
+        return deckId;
+    }
+
+    public void setDeckId(String deckId) {
+        this.deckId = deckId;
     }
 
     public String getFront() {
@@ -171,6 +183,14 @@ public class Card {
 
     public void setUpdatedAt(Instant updated_at) {
         this.updatedAt = updated_at;
+    }
+
+    public Instant getStudiedAt() {
+        return studiedAt;
+    }
+
+    public void setStudiedAt(Instant studiedAt) {
+        this.studiedAt = studiedAt;
     }
 
     public Integer getLapses() {
