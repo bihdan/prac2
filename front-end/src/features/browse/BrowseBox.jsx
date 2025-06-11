@@ -11,7 +11,7 @@ import type_icon from "../../assets/type-icon.png"
 
 import tag_icon from "../../assets/tag-icon.png"
 
-function BrowseBox({ cards, setCards, decks, handleCardClick }) {
+function BrowseBox({ cards, setCards, decks, handleCardClick, flagNameColors }) {
     const [isSelectedCard, setIsSelectedCard] = useState(false);
     
     const flags = ["Red","Orange","Yellow","Green","Blue","Pink","Purple"];
@@ -273,16 +273,6 @@ function BrowseBox({ cards, setCards, decks, handleCardClick }) {
         
     });
 
-    const flagNameColors = {
-        Red: {  name: "Червоний", color: "#ff4d4d" },
-        Orange: { name: "Помаранчевий", color: "#ffa500" },
-        Yellow: { name: "Жовтий", color: "#ffff66" },
-        Green: { name: "Зелений", color: "#66ff66" },
-        Blue: { name: "Синій", color: "#66ccff" },
-        Pink: { name: "Рожевий", color: "#ff99cc" },
-        Purple: { name: "Фіолетовий", color: "#cc99ff" },
-    };
-
     const todayChoices = {
         added: {key: "added", name: "Додано" },
         studied: {key: "studied", name: "Пройдено" },
@@ -457,20 +447,22 @@ function BrowseBox({ cards, setCards, decks, handleCardClick }) {
                                 <th>Колода</th>
                                 <th>Термін</th>
                                 <th>Тип</th>
-                                <th>Флажок</th>
+                                {/*<th>Флажок</th>*/}
                                 <th>Інтервал</th>
                                 <th>Складність</th>
                                 <th>Оновлено</th>
                                 <th>Невдач</th>
                                 <th>Переглядів</th>
-                                <th>Записи</th>
+                                <th>Теги</th>
                                 <th>Створено</th>
                                 <th>Повторено</th>
                             </tr>
                         </thead>
                         <tbody>
                             {getFilteredCards().map((card, index) => (
-                            <tr key={card.id} style={{
+                            <tr key={card.id} 
+                                className={`${card.deleted === true ? "deleted" : ""}`}
+                                style={{
                                 backgroundColor: card.flag && flagColors[card.flag] ? flagColors[card.flag] : index % 2 === 0 ? "var(--bg-color)" : "var(--header-color)" 
                                 }}
                                 //className={` ${frontError ? "input-error" : ""}`}
@@ -486,7 +478,7 @@ function BrowseBox({ cards, setCards, decks, handleCardClick }) {
                                 <td className="tableText">{deckIdToName[card.deckId] || "—"}</td>
                                 <td className="tableTextCenter">{card.endDate || "—"}</td>
                                 <td className="tableText">{cardType(card.daysJump) || "—"}</td>
-                                <td className="tableTextCenter">{card.flag || "—"}</td>
+                                {/*<td className="tableTextCenter">{card.flag || "—"}</td>*/}
                                 <td className="tableTextCenter">{card.daysJump}</td>
                                 <td className="tableTextCenter">{card.ease}</td>
                                 <td className="tableTextCenter">{card.updatedAt /*()=> {
@@ -498,7 +490,7 @@ function BrowseBox({ cards, setCards, decks, handleCardClick }) {
                                     className="tableText"
                                     style={{maxWidth: 100 +"px"}}
                                 >
-                                    {card.notes}
+                                    {card.tag}
                                 </td>
                                 <td className="tableTextCenter">{new Date(card.createdAt).toLocaleDateString() || "—"}</td>
                                 <td className="tableTextCenter">{card.studiedAt}</td> 

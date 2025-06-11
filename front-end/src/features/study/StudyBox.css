@@ -83,7 +83,8 @@
 }
 
 .cardContainer {
-  flex-grow: 1;
+  height: 120px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -173,4 +174,9 @@
 
 }
 
+.fakeInputWrapper{
+  width: 100%;
 
+  display: flex;
+  justify-content: center;
+}

@@ -70,7 +70,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
       back: trimmedBack,
 
       flag: null,
-      notes: "",
+      tag: null,
 
       endDate: null,
       daysJump: -1,
@@ -79,7 +79,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
       lapses: 0,
       reviews: 0,
       
-      unsynchronised: -1,
+      unsynchronised: true,
       modifiedAt : createdAt,
       updatedAt: null,
       createdAt: createdAt,
@@ -139,7 +139,9 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
       return;
     }
 
-    const createdAt = Date.now();
+    const now = Date.now();
+    const createdAt = new Date(now).toISOString();
+    
     const confirmationCode = getCookie("confirmation_code");
 
     const newDeck = {
@@ -148,7 +150,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
 
       color: "#242424",
 
-      unsynchronised: -1,
+      unsynchronised: true,
       modifiedAt : createdAt,
       updatedAt: null,
       createdAt: createdAt
@@ -206,7 +208,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
             <div className="top-text">Нова картка</div>
 
             <select 
-            className="deck_select"
+            className="customSelect"
             value={selectedDeck}
             onChange={(e) => setSelectedDeck(e.target.value)}>
                 

@@ -5,6 +5,8 @@ import {push, pull} from "./syncService";
 import push_icon from "../../assets/push-icon.png"
 import pull_icon from "../../assets/pull-icon.png"
 
+
+
 function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  }){
 
     const [hasChanges, setHasChanges] = useState(false);
@@ -14,8 +16,8 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        const unsyncedDecks = decks.some((d) => d.unsynchronised === -1);
-        const unsyncedCards = cards.some((c) => c.unsynchronised === -1);
+        const unsyncedDecks = decks.some((d) => d.unsynchronised);
+        const unsyncedCards = cards.some((c) => c.unsynchronised);
         setHasChanges(unsyncedDecks || unsyncedCards);
     }, [decks, cards]);
     
@@ -28,7 +30,7 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
         try {
         // філь і форм об'єктів для відправки
             const decksToSync = decks
-                .filter((d) => d.unsynchronised === -1)
+                .filter((d) => d.unsynchronised)
                 .map(({ 
                     id, 
                     name, 
@@ -43,7 +45,7 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
                 }));
 
             const cardsToSync = cards
-                .filter((c) => c.unsynchronised === -1)
+                .filter((c) => c.unsynchronised)
                 .map(
                     ({
                         id,
@@ -80,7 +82,7 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
             const activityRaw =  activity; //JSON.parse(localStorage.getItem("activity") || "{}");
             const activityToSync = Object.fromEntries(
                 Object.entries(activityRaw)
-                    .filter(([_, value]) => value.unsynchronised === -1)
+                    .filter(([_, value]) => value.unsynchronised)
                     .map(([date, value]) => [
                         date,
                         {
@@ -102,32 +104,32 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
 
             
             const newDecks = decks.map((d) =>
-                d.unsynchronised === -1
+                d.unsynchronised
                 ? {
                     ...d,
                     updated_at: d.modified_at,
-                    unsynchronised: null,
+                    unsynchronised: false,
                     }
                 : d
             );
 
             const newCards = cards.map((c) =>
-                c.unsynchronised === -1
+                c.unsynchronised
                 ? {
                     ...c,
                     updated_at: c.modified_at,
-                    unsynchronised: null,
+                    unsynchronised: false,
                     }
                 : c
             );
             
             const newActivity = { ...activityRaw };
             for (const [date, value] of Object.entries(newActivity)) {
-                if (value.unsynchronised === -1) {
+                if (value.unsynchronised) {
                     newActivity[date] = {
                         ...value,
                         updatedAt: value.modifiedAt,
-                        unsynchronised: null
+                        unsynchronised: false
                     };
                 }
             }

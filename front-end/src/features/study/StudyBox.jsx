@@ -3,6 +3,8 @@ import "./StudyBox.css";
 import back_icon from "../../assets/back-icon.png"
 import trianle_icon from "../../assets/trianle-icon.png"
 import study_icon from "../../assets/study-icon.png"
+import reveal_icon from "../../assets/reveal-icon.png"
+
 
 
 function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
@@ -129,31 +131,6 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
     }
     
   }, [selectedNewDates, queueDateAndcountOfNew]);
-
-
-  
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      const end = Date.now();
-      if (startStudy !== null) {
-        const durationSeconds = Math.floor((end - startStudy) / 1000);
-        if (durationSeconds > 600) {
-          updateStudyTime(60);
-        } else {
-          updateStudyTime(durationSeconds);
-        }
-      }
-      
-      
-      
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [startStudy]);
 
   useEffect(() => {
     if (selectedDeckId) {
@@ -296,8 +273,28 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
     }*/
   };
 
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+
+
+      const end = Date.now();
+      if (startStudy !== null) {
+        updateStudyTime(calcStudyTime());
+      }
+
+      
+
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [startStudy]);
+
   const handleStartStudy = () => {
-    if ((includeNew && selectedNewDates.length != 0) || (includeFamiliar && selectedFamiliarDates.length != 0) || (includeDue && selectedDueDates.length != 0)) {
+    if ((includeNew && selectedNewDates.length !== 0) || (includeFamiliar && selectedFamiliarDates.length !== 0) || (includeDue && selectedDueDates.length !== 0)) {
       const newQueue = generateStudyQueue(cards, {
         includeNew,
         includeFamiliar,
@@ -308,8 +305,6 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
         alert("Немає карток для навчання.");
         return;
       }
-    
-      console.log(newQueue);
 
       setStudyQueue(newQueue);
       setIndex(0);
@@ -377,10 +372,38 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
     return queue;
   };
 
-  const handleAnswer = (quality) => { // card, 
+  const [startFrontTime, setStartFrontTime] = useState(null);
+  const [startBackTime, setStartBackTime] = useState(null);
+  const [totalStudyTime, setTotalStudyTime] = useState(0);
+
+  useEffect(() => {
+    if (currentCard) {
+      const now = Date.now();
+      setStartFrontTime(now);
+      setStartBackTime(null);
+    }
+  }, [currentCard]);
+
+  const handleReveal = () => {
+    setIsBackShown(true);
+    setStartBackTime(Date.now());
+  };
+
+  const calcStudyTime = () => {
     const now = new Date();
 
-    let intervalMinutes;
+    const frontDuration = Math.floor((startBackTime ? (startBackTime - startFrontTime) : (now - startFrontTime)) / 1000 ) ;
+    
+    const backDuration = Math.floor((startBackTime ? (now - startBackTime) : 0) / 1000 ) ;
+
+    const total = (frontDuration > 600 ? 60 : frontDuration) 
+    + (backDuration > 600 ? 60 : backDuration);
+
+    return total;
+
+  }
+
+  const handleAnswer = (quality) => { // card, 
 
     switch (quality) {
     case "again":
@@ -417,12 +440,16 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
       setStudyQueue([]);
       setCurrentCard(null);
       setIsStudying(false);
+
+      setIsSetting(true); 
       alert("Навчання завершено!");
     }
     console.log(index, currentCard, studyQueue[nextIndex] );
     // TODO: зберігати оновлення
 
     incrementReviewedStatToday();
+
+    updateStudyTime(calcStudyTime());
 
   };
 
@@ -848,11 +875,10 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
       {isStudying && (
         <div className="studySession">
   
-          {/* Навігація */}
           <div className="topBar">
             <img 
               src={back_icon}
-              className="back_button"
+              className="image_button " //back_button
               alt="Повернутися назад" 
               onClick={() => {
                 setIsStudying(false);
@@ -865,20 +891,45 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
 
           <div className="cardContainer">
             {currentCard && (
-              <div className="cardDisplay">
+              <div className="container" style={{width: 80 + "%", height: 100 + "%"}}> {/*cardDisplay 
                 <div className="cardFront">
                   {currentCard.front}
                 </div>
+                
+                                  
+                  {/*<div className="cardBack">
+                    {currentCard.back}
+                  </div>*/}
 
-                <hr></hr>
+                <div className="fakeInputWrapper">
+
+                  <div
+                    className="fake_input"
+                    style={{width: 90 + "%"}}
+                    suppressContentEditableWarning={true}
+                  > 
+                    {currentCard.front}
+                  </div>
+
+                </div>
+
+
+                <div className="customLine"></div>
 
                 {isBackShown && (
-                  
-                  <div className="cardBack">
-                    {currentCard.back}
+                  <div className="fakeInputWrapper">
+                    <div
+                      className="fake_input"
+                      style={{width: 90 + "%"}}
+                      suppressContentEditableWarning={true}
+                    > 
+                      {currentCard.back}
+                    </div>
                   </div>
                 )}
               </div>
+
+              
             )}
           </div>
 
@@ -888,15 +939,51 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
             {currentCard && (
               isBackShown ? (
                 <div className="responseButtons">
-                  <button style={{ backgroundColor: 'red' }} onClick={() => handleAnswer("again")}>Знову</button>
-                  <button style={{ backgroundColor: 'yellow', color: 'black'  }} onClick={() => handleAnswer("hard")}>Важко</button>
-                  <button style={{ backgroundColor: 'green' }} onClick={() => handleAnswer("good")}>Добре</button>
-                  <button style={{ backgroundColor: 'deepskyblue' }} onClick={() => handleAnswer("easy")}>Легко</button>
+                  <button 
+                    className="image_button " 
+                    style={{ 
+                    width: "auto", 
+                    background: "var(--block-color)", 
+                    borderColor: "var(--text-color)", 
+                    color: "var(--text-color)" }} 
+                    onClick={() => handleAnswer("again")}>Знову</button>
+                  <button 
+                    className="image_button " 
+                    style={{ 
+                    width: "auto", 
+                    background: "var(--block-color)", 
+                    borderColor: "var(--text-color)", 
+                    color: "var(--text-color)" }} 
+                    onClick={() => handleAnswer("hard")}>Важко</button>
+
+                  <button 
+                    className="image_button " 
+                    style={{ 
+                    width: "auto", 
+                    background: "var(--block-color)", 
+                    borderColor: "var(--text-color)", 
+                    color: "var(--text-color)" }} 
+                    onClick={() => handleAnswer("good")}>Добре</button>
+
+                  <button 
+                    className="image_button " 
+                    style={{ 
+                    width: "auto", 
+                    background: "var(--block-color)", 
+                    borderColor: "var(--text-color)", 
+                    color: "var(--text-color)" }} 
+                    onClick={() => handleAnswer("easy")}>Легко</button>
                 </div>
               ) : (
-                <button className="showAnswerButton" onClick={() => setIsBackShown(true)}>
-                  Показати відповідь
-                </button>
+
+
+                  <img 
+                    src={reveal_icon}
+                    className="image_button " //back_button
+                    alt="Повернутися назад" 
+                    onClick={handleReveal()}
+                    role="button"
+                  />
               )
             )}
 

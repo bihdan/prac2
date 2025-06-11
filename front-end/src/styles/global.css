@@ -259,7 +259,7 @@ input[type=checkbox]:indeterminate + .custom-checkbox::after {
   border-radius: 5px;
 
   text-align: start;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   font-family: inherit;
   white-space: pre-wrap;
 
@@ -289,6 +289,7 @@ input[type=checkbox]:indeterminate + .custom-checkbox::after {
 }
 
 .container{
+
   height: 55px;
   overflow-y: auto;
   scrollbar-gutter: stable;
@@ -299,4 +300,52 @@ input[type=checkbox]:indeterminate + .custom-checkbox::after {
 
   display: flex;
   justify-content: start;
+
+  font-size: 0.8em;
 }
+
+
+.customSelect{
+  display: block;
+  width: 40%;
+
+  background-color: var(--block-color);
+  color: var(--text-color);
+  border: 1px solid var(--text-color);
+  border-radius: 5px;
+
+  font-size: 0.8rem;
+
+}
+
+
+.customSelect:focus{
+  outline: 2px solid var(--text-color);
+}
+
+fieldset{
+  border: transparent;
+}
+
+fieldset:disabled{
+
+
+  padding-block: 0;
+  padding-inline: 0;
+
+  opacity: 0.5;
+
+}
+
+.deleted{
+  opacity: 0.3;
+}
+
+.customLine{
+  width: 100%;
+
+  margin: 5px;
+
+  border-bottom: 1px solid var(--text-color);
+}
+

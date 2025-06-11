@@ -42,8 +42,6 @@ function App() {
     return saved ? JSON.parse(saved) : {};
   });
 
-
-
   const [deckStats, setDeckStats] = useState({});
 
   useEffect(() => {
@@ -78,11 +76,20 @@ function App() {
     setSelectedDeckIdForStudy(deckId);
   };
 
-  const [front, setFront] = useState("");
-  const [back, setBack] = useState("");
+  const [selectedDeckIdForDetails, setSelectedDeckIdForDetails] = useState(null);
   const handleCardClick = (card) => {
-    setFront(card.front || "");
-    setBack(card.back || "");
+    setSelectedDeckIdForDetails(card.id);
+  };
+
+  
+  const flagNameColors = {
+    Red: {  name: "Червоний", color: "#ff4d4d" },
+    Orange: { name: "Помаранчевий", color: "#ffa500" },
+    Yellow: { name: "Жовтий", color: "#ffff66" },
+    Green: { name: "Зелений", color: "#66ff66" },
+    Blue: { name: "Синій", color: "#66ccff" },
+    Pink: { name: "Рожевий", color: "#ff99cc" },
+    Purple: { name: "Фіолетовий", color: "#cc99ff" },
   };
 
 
@@ -280,13 +287,13 @@ function App() {
               
               <CreatingBox decks={decks} setDecks={setDecks} cards={cards} setCards={setCards} prevStats={deckStats} setDeckStats={setDeckStats} setActivity={setActivity} />
               
-              <DetailsOfTheCard front={front} setFront={setFront} back={back} setBack={setBack}  />
+              <DetailsOfTheCard cards={cards} setCards={setCards} decks={decks} flagNameColors={flagNameColors} selectedDeckIdForDetails={selectedDeckIdForDetails}  /> {/* front={front} setFront={setFront} back={back} setBack={setBack} */}
 
               <StudyBox selectedDeckId={selectedDeckIdForStudy} deckStats={deckStats} decks={decks} cards={cards} setActivity={setActivity} />
               
               <StatisticBox activity={activity} />
               
-              <BrowseBox cards={cards} setCards={setCards} decks={decks} handleCardClick={handleCardClick}/>
+              <BrowseBox cards={cards} setCards={setCards} decks={decks} handleCardClick={handleCardClick} flagNameColors={flagNameColors} />
               
             </div>
 

@@ -63,6 +63,11 @@ public class SynchronizeController {
         }
 
         for (CardDTO cardDTO : request.getCards()) {
+            if (cardDTO.isDeleted()) {
+                cardRepository.deleteById(cardDTO.getId());
+                continue;
+            }
+
             cardService.saveOrUpdateCard(cardDTO);
         }
 

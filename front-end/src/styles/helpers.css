@@ -21,6 +21,39 @@
   justify-content: center;
 }
 
+.flexCenterWithoutJC{
+  display: flex;
+  align-items: center;
+}
+
+.spaceBetween{
+  justify-content: space-between;
+}
+
+.leftRightPadding50{
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
 .height30px{
   height: 43px;
+}
+
+.width25percent{
+  width: 25%;
+}
+
+.width80percent{
+  width: 80%;
+  margin: 0 auto;
+}
+
+.noPadding{
+  padding: 0px;
+}
+
+.flexEnd{
+  display: flex;
+  align-items: flex-end;
+  height: 40px;
 }

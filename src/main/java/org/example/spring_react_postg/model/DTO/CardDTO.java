@@ -24,6 +24,8 @@ public class CardDTO {
     private Integer reviews;
     private String notes;
 
+    private boolean deleted;
+
     public CardDTO (Card card) {
         this.id = card.getId();
         this.deckId = card.getDeckId();
@@ -38,6 +40,10 @@ public class CardDTO {
         this.lapses = card.getLapses();
         this.reviews = card.getReviews();
         this.notes = card.getNotes();
+    }
+
+    public boolean isDeleted(){
+        return deleted;
     }
 
     public String getId() {

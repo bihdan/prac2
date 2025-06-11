@@ -35,23 +35,7 @@
   font-size: 0.8rem;
 }
 
-.deck_select{
-  display: block;
-  width: 40%;
 
-  background-color: var(--block-color);
-  color: var(--text-color);
-  border: 1px solid var(--text-color);
-  border-radius: 5px;
-
-  font-size: 0.8rem;
-
-}
-
-
-.deck_select:focus{
-  outline: 2px solid var(--text-color);
-}
 
 
 .create-buttom{

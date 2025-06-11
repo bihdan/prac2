@@ -1,12 +1,32 @@
 .detailOfTheCard{
     width: 100%;
-    height: 160px;
+    height: 175px;
     
     display: flex;
     flex-direction: column;
 
     
     overflow: hidden; 
+}
+
+.containerAndDelButton{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    width: 100%;
+}
+
+.topBox, .bottomBox{
+    display: flex;
+    flex-direction: row;
+}
+.nameAndContainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
 }
+
 
