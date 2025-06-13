@@ -75,9 +75,9 @@ public class AuthController {
                 Optional<AuthToken> authTokenOpt = authTokenRepository.findByToken(token);
                 if (authTokenOpt.isPresent()) {
                     return ResponseEntity.ok("Login successful by AUTH_TOKEN");
-                } else {
+                } /*else {
                     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-                }
+                }*/
             }
         }
 

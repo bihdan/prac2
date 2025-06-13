@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
@@ -87,22 +86,18 @@ public class SynchronizeController {
                 String date = entry.getKey();
                 DailyStats newStats = entry.getValue();
 
+                System.out.println(newStats);
+
                 if (!existing.containsKey(date)) {
                     existing.put(date, newStats);
                 } else {
                     DailyStats oldStats = existing.get(date);
 
-                    // Додай значення полів
+
                     oldStats.setReviewed(oldStats.getReviewed() + newStats.getReviewed());
                     oldStats.setAdded(oldStats.getAdded() + newStats.getAdded());
                     oldStats.setDurationSeconds(oldStats.getDurationSeconds() + newStats.getDurationSeconds());
-//                    oldStats.setReviews(oldStats.getReviews() + newStats.getReviews());
 
-//                    oldStats.setLearned(oldStats.getLearned() + newStats.getLearned());
-//                    oldStats.setLapses(oldStats.getLapses() + newStats.getLapses());
-//                    oldStats.setReviews(oldStats.getReviews() + newStats.getReviews());
-
-                    // Онови updatedAt, якщо новіше
                     if (newStats.getUpdatedAt() != null &&
                             (oldStats.getUpdatedAt() == null || newStats.getUpdatedAt().isAfter(oldStats.getUpdatedAt()))) {
                         oldStats.setUpdatedAt(newStats.getUpdatedAt());
@@ -143,6 +138,7 @@ public class SynchronizeController {
         List<CardDTO> cardsToSend = new ArrayList<>();
 
         for (Deck serverDeck : allUserDecks) {
+            System.out.println(serverDeck);
 
             String deckId = serverDeck.getId();
             Instant serverUpdatedAt = serverDeck.getUpdatedAt();
@@ -180,7 +176,7 @@ public class SynchronizeController {
 //                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Map<String, DailyStats> filtered;
-        Instant statUpdatedAt = request.getStatUpdatedAt();
+        Instant statUpdatedAt = request.getUpdatedAt();
 
         if (statUpdatedAt == null) {
 

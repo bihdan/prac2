@@ -61,7 +61,8 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
                         notes,
                         modifiedAt,
                         updatedAt,
-                        createdAt
+                        createdAt,
+                        studiedAt
                     }) => ({
                         id,
                         deckId,
@@ -75,7 +76,8 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
                         reviews,
                         notes,
                         updatedAt: modifiedAt,
-                        createdAt
+                        createdAt,
+                        studiedAt
                     })
                 );
             
@@ -88,7 +90,7 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
                         {
                             reviewed: value.reviewed,
                             added: value.added,
-                            durationSeconds: value.time,
+                            durationSeconds: value.durationSeconds,
                             updatedAt: value.modifiedAt
                         }
                     ])

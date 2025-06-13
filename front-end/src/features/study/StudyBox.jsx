@@ -520,7 +520,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
         [today]: {
           added: prev[today]?.added || 0,
           reviewed: (prev[today]?.reviewed || 0) + 1,
-          time: prev[today]?.time || 0,
+          durationSeconds: prev[today]?.time || 0,
           unsynchronised: -1,
           modifiedAt : modifiedAt,
           updatedAt: prev[today]?.updatedAt || null
@@ -546,7 +546,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
         [today]: {
           added: prev[today]?.added || 0,
           reviewed: prev[today]?.reviewed || 0,
-          time: (prev[today]?.time || 0) + duration,
+          durationSeconds: (prev[today]?.time || 0) + duration,
           unsynchronised: -1,
           modifiedAt : modifiedAt,
           updatedAt: prev[today]?.updatedAt || null

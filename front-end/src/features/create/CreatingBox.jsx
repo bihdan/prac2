@@ -181,7 +181,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
         [today]: {
           added: (prev[today]?.added || 0) + 1,
           reviewed: prev[today]?.reviewed || 0,
-          time: prev[today]?.time || 0,
+          durationSeconds: prev[today]?.time || 0,
           unsynchronised: -1,
           modifiedAt : modifiedAt,
           updatedAt: prev[today]?.updatedAt || null

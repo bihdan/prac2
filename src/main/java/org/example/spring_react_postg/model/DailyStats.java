@@ -1,5 +1,6 @@
 package org.example.spring_react_postg.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,8 @@ public class DailyStats {
     private int reviewed;
     private int added;
     private int durationSeconds;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Instant updatedAt;
 
 
@@ -46,4 +49,15 @@ public class DailyStats {
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "DailyStats{" +
+                "reviewed=" + reviewed +
+                ", added=" + added +
+                ", durationSeconds=" + durationSeconds +
+                ", updatedAt=" + (updatedAt != null ? updatedAt.toString() : "null") +
+                '}';
+    }
+
 }
