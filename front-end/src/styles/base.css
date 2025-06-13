@@ -46,8 +46,14 @@ label input[type="checkbox" i]{
 
 
 tr{
-    cursor: pointer;
+  cursor: pointer;
 }
+
+tr:hover{
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--header-color);
+}
+
 
 th{
     font-size: 0.6rem;

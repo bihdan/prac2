@@ -101,7 +101,11 @@
   align-items: center;
 }
 
-.responseButtons button {
+.responseButtons {
+  display: flex;
+
+  flex-direction: row;
+
   margin: 5px;
 }
 
@@ -179,4 +183,22 @@
 
   display: flex;
   justify-content: center;
+}
+
+
+.responseBlock{
+  width: 60px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+}
+
+.nextIntervalDisplay{
+  text-align: center;
+
+  font-size: 0.6em;
+
 }

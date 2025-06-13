@@ -74,7 +74,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
 
       endDate: null,
       daysJump: -1,
-      ease: 10,
+      ease: 2.5,
       
       lapses: 0,
       reviews: 0,

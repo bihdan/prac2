@@ -22,9 +22,10 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
   const [selectedFamiliarDates, setSelectedFamiliarDates] = useState({});
   const [selectedDueDates, setSelectedDueDates] = useState({});
 
-  const [checkedNewDates, setCheckedNewDates] = useState({});
-  const [checkedFamiliarDates, setCheckedFamiliarDates] = useState({});
-  const [checkedDueDates, setCheckedDueDates] = useState({});
+  const [nextIntervalAgain, setNextIntervalAgain] = useState(null);
+  const [nextIntervalHard, setNextIntervalHard] = useState(null);
+  const [nextIntervalGood, setNextIntervalGood] = useState(null);
+  const [nextIntervalEasy, setNextIntervalEasy] = useState(null);
 
   const [queueOfNew, setQueueOfNew] = useState([]);
   const [queueOfFamiliar, setQueueOfFamiliar] = useState([]);
@@ -179,8 +180,10 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
       }
 
       const newCountByDate = queueOfNew.reduce((acc, card) => {
-        const temp = card.createdAt; // card.modifiedAt ?? card.updatedAt ?? 
-        const sliced = temp.slice(0, 10);
+        const temp = card.createdAt;
+        console.log(temp);
+        const sliced = temp.slice(0, 10); 
+ 
         acc[sliced] = (acc[sliced] || 0) + 1;
         return acc;
       }, {});
@@ -387,7 +390,58 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
   const handleReveal = () => {
     setIsBackShown(true);
     setStartBackTime(Date.now());
+
+    setNextIntervalAgain(calcNextInterval(currentCard, "again").interval);
+    setNextIntervalHard(calcNextInterval(currentCard, "hard").interval);
+    setNextIntervalGood(calcNextInterval(currentCard, "good").interval);
+    setNextIntervalEasy(calcNextInterval(currentCard, "easy").interval);
   };
+
+  const calcNextInterval = (card, quality) => {
+    let ease = card.ease || 2.5; // Початкове значення в Anki
+    let interval = card.daysJump || 0;
+    let lapses = card.lapses || 0;
+
+    switch (quality) {
+      case "again":
+        lapses += 1;
+        ease = Math.max(1.3, ease - 0.2);
+        return {
+          interval: 1,
+          ease,
+          lapses
+        };
+
+      case "hard":
+        ease = Math.max(1.3, ease - 0.15);
+        return {
+          interval: Math.max(1, Math.round(interval * 1.2)),
+          ease,
+          lapses
+        };
+
+      case "good":
+        return {
+          interval: interval === 0 ? 1 : Math.round(interval * ease),
+          ease,
+          lapses
+        };
+
+      case "easy":
+        ease += 0.15;
+        return {
+          interval: interval === 0 ? 3 : Math.round(interval * ease * 1.3),
+          ease,
+          lapses
+        };
+
+      default:
+        return { interval, ease, lapses };
+    }
+  };
+
+
+
 
   const calcStudyTime = () => {
     const now = new Date();
@@ -406,21 +460,21 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
   const handleAnswer = (quality) => { // card, 
 
     switch (quality) {
-    case "again":
-      // ...
-      break;
-    case "hard":
-      // ...
-      break;
-    case "good":
-      // ...
-      break;
-    case "easy":
-      // ...
-      break;
-    default:
-      return;
-  }
+      case "again":
+        // ...
+        break;
+      case "hard":
+        // ...
+        break;
+      case "good":
+        // ...
+        break;
+      case "easy":
+        // ...
+        break;
+      default:
+        return;
+    }
 
     /*const nextReview = new Date(now.getTime() + intervalMinutes * 60 * 1000);
     card.endDate = nextReview.toISOString();
@@ -938,8 +992,14 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
           <div className="controls">
             {currentCard && (
               isBackShown ? (
+
                 <div className="responseButtons">
-                  <button 
+                  <div className="responseBlock">
+                    <div className="nextIntervalDisplay">
+                      ({nextIntervalAgain})
+                    </div>
+
+                    <button 
                     className="image_button " 
                     style={{ 
                     width: "auto", 
@@ -947,32 +1007,54 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
                     borderColor: "var(--text-color)", 
                     color: "var(--text-color)" }} 
                     onClick={() => handleAnswer("again")}>Знову</button>
-                  <button 
-                    className="image_button " 
-                    style={{ 
-                    width: "auto", 
-                    background: "var(--block-color)", 
-                    borderColor: "var(--text-color)", 
-                    color: "var(--text-color)" }} 
-                    onClick={() => handleAnswer("hard")}>Важко</button>
+                  
 
-                  <button 
-                    className="image_button " 
-                    style={{ 
-                    width: "auto", 
-                    background: "var(--block-color)", 
-                    borderColor: "var(--text-color)", 
-                    color: "var(--text-color)" }} 
-                    onClick={() => handleAnswer("good")}>Добре</button>
+                  </div>
 
-                  <button 
-                    className="image_button " 
-                    style={{ 
-                    width: "auto", 
-                    background: "var(--block-color)", 
-                    borderColor: "var(--text-color)", 
-                    color: "var(--text-color)" }} 
-                    onClick={() => handleAnswer("easy")}>Легко</button>
+                  <div className="responseBlock">
+                    <div className="nextIntervalDisplay">
+                      ({nextIntervalHard})
+                    </div>
+                    <button 
+                      className="image_button " 
+                      style={{ 
+                      width: "auto", 
+                      background: "var(--block-color)", 
+                      borderColor: "var(--text-color)", 
+                      color: "var(--text-color)" }} 
+                      onClick={() => handleAnswer("hard")}>Важко</button>
+
+                  </div>
+                  
+                  <div className="responseBlock">
+                    <div className="nextIntervalDisplay">
+                      ({nextIntervalGood})
+                    </div>
+                    <button 
+                      className="image_button " 
+                      style={{ 
+                      width: "auto", 
+                      background: "var(--block-color)", 
+                      borderColor: "var(--text-color)", 
+                      color: "var(--text-color)" }} 
+                      onClick={() => handleAnswer("good")}>Добре</button>
+
+                  </div>
+
+                  <div className="responseBlock">
+                    <div className="nextIntervalDisplay">
+                      ({nextIntervalEasy})
+                    </div>
+
+                    <button 
+                      className="image_button " 
+                      style={{ 
+                      width: "auto", 
+                      background: "var(--block-color)", 
+                      borderColor: "var(--text-color)", 
+                      color: "var(--text-color)" }} 
+                      onClick={() => handleAnswer("easy")}>Легко</button>
+                  </div>
                 </div>
               ) : (
 
