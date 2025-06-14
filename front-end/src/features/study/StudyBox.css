@@ -123,10 +123,9 @@
 
 .expantionOfDateBox{
 
-
-  flex-grow: 1; /* займає весь доступний простір */
+  flex-grow: 1; 
   overflow: auto;
-  height: 80px; /* або будь-яке обмеження по висоті */
+  height: 80px; 
   width: 105px;
   max-width: 100%;
 }
@@ -152,16 +151,6 @@
 .trianle_Fakebutton{
   align-items: center;
   justify-content: center;
-
-
-  /*border-top: 20px transparent;
-  border-right: 0px transparent;
-  border-bottom: 12px transparent;
-  border-left: 20px solid gray;
-
-  width: 0;
-  height: 0px;*/
-  
 
   border: none;
   background: none;

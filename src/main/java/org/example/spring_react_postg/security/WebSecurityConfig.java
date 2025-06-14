@@ -41,8 +41,6 @@ import java.security.PublicKey;
  * а також правила доступу для різних маршрутів.
  */
 @Configuration
-//@EnableMethodSecurity
-//@EnableWebSecurity
 public class WebSecurityConfig {
 
     @Autowired
@@ -86,19 +84,6 @@ public class WebSecurityConfig {
 
     }
 
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/api/**")
-//                        .allowedOrigins("http://localhost:5173")
-//                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-//                        .allowCredentials(true)
-//                        .allowedHeaders("*");
-//            }
-//        };
-//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

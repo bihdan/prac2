@@ -28,7 +28,6 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
         setMessage("Відправка...");
 
         try {
-        // філь і форм об'єктів для відправки
             const decksToSync = decks
                 .filter((d) => d.unsynchronised)
                 .map(({ 
@@ -237,21 +236,15 @@ function SyncButtons ({decks, setDecks, cards, setCards, activity, setActivity  
             cardMap.set(newCard.id, newCard);
         });
 
-        // Оновлені масиви
         const updatedDecks = Array.from(deckMap.values());
         const updatedCards = Array.from(cardMap.values());
 
-        // Оновлюємо localStorage
         localStorage.setItem('decks', JSON.stringify(updatedDecks));
         localStorage.setItem('cards', JSON.stringify(updatedCards));
 
         setDecks(updatedDecks);
         setCards(updatedCards);
-        // Також оновлюємо масиви, які були передані
-        /*decks.length = 0;
-        cards.length = 0;
-        decks.push(...updatedDecks);
-        cards.push(...updatedCards);*/
+
     };
 
 

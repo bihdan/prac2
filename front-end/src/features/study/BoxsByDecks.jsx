@@ -1,7 +1,7 @@
 import React from 'react';
-import './BoxsByDecks.css'; // Підключи стилі, подібні до customTextForLabels і HBoxesForDesks
+import './BoxsByDecks.css'; 
 
-function BoxsByDecks({ decks, cards, deckStats, setDeckStats, onDeskClick}) { // , cardsCounter, onDeskClick 
+function BoxsByDecks({ decks, cards, deckStats, setDeckStats, onDeskClick}) { 
 
   const renderedIds = new Set();
 

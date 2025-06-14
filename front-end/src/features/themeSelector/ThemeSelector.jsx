@@ -173,24 +173,6 @@ function ThemeSelector() {
                 </div>
             )}
 
-            {/*visible && (
-                <div className="themeList">
-                {Object.entries(themes).map(([key, theme]) => (
-                    <div
-                        key={key}
-                        className={`themeItem ${selected === key ? "selected" : ""}`}
-                        style={{ backgroundColor: theme["--bg-color"] }}
-                        onClick={() => {
-                            applyTheme(key);
-                            setVisible(false);
-                        }}
-                        title={theme.name}
-                    >
-                        {theme.name}
-                    </div>
-                ))}
-                </div>
-            )*/}
         </div>
     );
 }

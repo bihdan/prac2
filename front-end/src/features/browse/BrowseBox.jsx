@@ -115,14 +115,12 @@ function BrowseBox({ cards, setCards, decks, handleCardClick, flagNameColors }) 
                         if (!isToday(card.modifiedAt) || !isToday(card.updatedAt)) return false;
                         break;
                     case "due":
-                        if (!isToday(card.endDate)) return false; //!card.endDate || new Date(card.endDate) > new Date()) return false;
+                        if (!isToday(card.endDate)) return false; 
                         break;
                     case "studied":
-                        if (!isToday(card.studiedAt)) return false; // card.studiedAt > 0 && 
+                        if (!isToday(card.studiedAt)) return false;
                         break;
                     case "added":
-                        // додавання до локальної бази? треба додаткове поле або маркер
-                        // можна тимчасово прирівняти до createdAt
                         if (!isToday(card.createdAt)) return false;
                         break;
                     default:

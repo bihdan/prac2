@@ -17,17 +17,6 @@ import java.util.Optional;
 @Repository
 public interface DeckRepository extends JpaRepository<Deck, String> {
 
-//    /**
-//     * Знаходить колоди, що належать певному користувачу за його ідентифікатором.
-//     *
-//     * @param confirmation_code ідентифікатор користувача
-//     * @return список колод, які належать користувачу з вказаним {@code userId}
-//     */
-//    List<Deck> findByUserConfirmationCode(String confirmation_code);
-
-//
-//    @Query("SELECT d FROM Deck d WHERE d.user.confirmationCode = :confCode")
-//    List<Deck> findDecksByUserConfCode(@Param("confCode") String confCode);
     Optional<Deck> findByName(String name);
 
     @Query("SELECT d FROM Deck d WHERE FUNCTION('split_part', d.id, '-', 1) = :confCode")

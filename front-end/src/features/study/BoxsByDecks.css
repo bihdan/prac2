@@ -1,7 +1,7 @@
 .boxesOfDeck{
     display: inline-block;
     width: 100%;
-    height: 200px;         /* або інша фіксована висота */
+    height: 200px;   
     overflow-y: auto;
     scrollbar-gutter: stable;
 

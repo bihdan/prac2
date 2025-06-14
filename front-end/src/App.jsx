@@ -192,29 +192,6 @@ function App() {
       )}
 
 
-      
-
-      {/*showLoginForm && (                         // showLogin
-        <div className="modal-overlay">
-          <LoginForm  
-          
-          onSuccess={(username) => {
-            setLoggedIn(true);
-            setUsername(username);
-            setShowLoginForm(false);
-
-            if (!localStorage.getItem("decks")) {
-              localStorage.setItem("decks", JSON.stringify([]));
-            }
-            if (!localStorage.getItem("cards")) {
-              localStorage.setItem("cards", JSON.stringify([]));
-            }
-          }}
-          
-          />
-        </div>
-      )*/}
-
       {/* Header */}
       <header className="header">
         <div className="titleAndSelector">

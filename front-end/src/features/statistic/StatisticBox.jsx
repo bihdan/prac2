@@ -39,35 +39,9 @@ function StatisticBox({activity}){
         setWeeklyStats(generatedStats);
     }, [activity]);
 
-    /*
-    const weeklyStats = generateWeeklyStats(activity);
-
-    function generateWeeklyStats(activity) {
-        const result = [];
-        const today = new Date();
-
-        for (let i = 6; i >= 0; i--) {
-            const date = new Date(today);
-            date.setDate(today.getDate() - i);
-
-            const isoDate = date.toISOString().slice(0, 10); // формат YYYY-MM-DD
-            const dayStats = activity[isoDate] || { added: 0, reviewed: 0, time: 0 };
-
-            result.push({
-                date: isoDate,
-                added: dayStats.added || 0,
-                reviewed: dayStats.reviewed || 0,
-                time: dayStats.time || 0,
-            });
-        }
-
-        return result;
-    }
-
-    */
 
     const getMaxValues = () => {
-        const defaultMax = { added: 1, reviewed: 1, time: 1 }; // щоб не ділити на 0
+        const defaultMax = { added: 1, reviewed: 1, time: 1 }; 
 
         return weeklyStats.reduce(
         (max, day) => ({

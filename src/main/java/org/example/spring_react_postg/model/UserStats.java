@@ -15,20 +15,13 @@ import org.hibernate.type.SqlTypes;
 import java.util.HashMap;
 import java.util.Map;
 
-//@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+
 @Entity
 @Table(name = "stat")
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserStats {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stat_seq")
-//    @SequenceGenerator(name = "stat_seq", sequenceName = "stats_id_seq", allocationSize = 1)
-//    private int id;
-//
-//    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-//    @Column(nullable = false)
-//    private Instant createdAt;
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +31,7 @@ public class UserStats {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-//    @Column(columnDefinition = "jsonb", nullable = false)
-//    private String activityHistoryJson; // буде конвертуватися з/в Map<String, DailyStats>
 
-//    @Column(columnDefinition = "jsonb", nullable = false)
-//    @Type(type = "jsonb")
-//    @JdbcTypeCode(SqlTypes.JSON)
     @Type(JsonBinaryType.class)
     @Column(columnDefinition = "jsonb", nullable = false)
     private Map<String, DailyStats> activity;

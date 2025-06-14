@@ -32,22 +32,12 @@ function LoginForm({ onSuccess }) {
         await login(payload);
       }
 
-      
-
-      {/* if (!localStorage.getItem("decks")) {
-          localStorage.setItem("decks", JSON.stringify([]));
-        }
-        if (!localStorage.getItem("cards")) {
-          localStorage.setItem("cards", JSON.stringify([]));
-        }*/ }
-
-
       onSuccess(payload.username);
       
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
       } else {
-        localStorage.removeItem("rememberMe"); // не запам’ятовуємо
+        localStorage.removeItem("rememberMe");
       }
 
     } catch (err) {
@@ -116,15 +106,6 @@ return (
             </label>
           </div>
           
-          
-          {/*<label>
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
-            Залишатися в системі
-          </label>*/}
         </div>
 
 

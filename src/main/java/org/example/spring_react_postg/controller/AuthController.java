@@ -28,6 +28,19 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.util.Optional;
 
+/**
+ * Контролер автентифікації користувача.
+ *
+ * Обробляє запити на реєстрацію, вхід, вихід, автоматичний вхід та керування токенами автентифікації.
+ * Використовує cookie для зберігання токенів (AUTH_TOKEN та confirmation_code).
+ *
+ * Основні функції:
+ * - логін з cookie або з логін-пароля
+ * - автоматичний логін через AUTH_TOKEN
+ * - реєстрація нового користувача
+ * - генерація нового токена
+ * - видалення cookie при виході
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -48,7 +61,14 @@ public class AuthController {
     UserStatsRepository userStatsRepository;
     private BCryptPasswordEncoder encode = new BCryptPasswordEncoder(12);
 
-
+    /**
+     * Авторизує користувача за допомогою логіна і пароля або cookie AUTH_TOKEN.
+     *
+     * @param loginRequest запит з логіном і паролем
+     * @param httpServletRequest запит, що містить cookie
+     * @param response відповідь, куди додаються cookie при успішній авторизації
+     * @return повідомлення про успішну чи невдалу авторизацію
+     */
     @PostMapping("/login")
     public ResponseEntity<?> logInUser(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest, HttpServletResponse response) { // @Valid
 
@@ -62,7 +82,7 @@ public class AuthController {
                 }
             }
 
-            
+
             if (token != null && !token.isEmpty()) {
                 Optional<AuthToken> authTokenOpt = authTokenRepository.findByToken(token);
                 if (authTokenOpt.isPresent()) {
@@ -103,6 +123,13 @@ public class AuthController {
         }
     }
 
+    /**
+     * Автоматичний вхід користувача на основі cookie AUTH_TOKEN.
+     *
+     * @param httpServletRequest запит, що містить cookie
+     * @param response відповідь
+     * @return ім’я користувача, якщо токен валідний, або повідомлення про помилку
+     */
     @GetMapping("/auto-login")
     public ResponseEntity<?> autoLogInUser(HttpServletRequest httpServletRequest, HttpServletResponse response) { // @Valid
 
@@ -136,8 +163,12 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("NO token");
     }
 
-
-
+    /**
+     * Вихід користувача — видаляє cookie AUTH_TOKEN з браузера.
+     *
+     * @param response відповідь, до якої додається cookie з терміном життя 0
+     * @return повідомлення про успішний вихід
+     */
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
 
@@ -152,6 +183,14 @@ public class AuthController {
         return ResponseEntity.ok().body("Logged out successfully.");
     }
 
+    /**
+     * Реєструє нового користувача.
+     *
+     * @param signupRequest об'єкт із полями username, email та password
+     * @param httpServletRequest HTTP-запит
+     * @param response HTTP-відповідь із встановленими cookie
+     * @return повідомлення про успішну або невдалу реєстрацію
+     */
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignupRequest signupRequest, HttpServletRequest httpServletRequest, HttpServletResponse response) { // @Valid
 
@@ -196,50 +235,12 @@ public class AuthController {
 
     }
 
-    @GetMapping("/getcookie")
-    public String getcookie(HttpServletRequest request){
-
-        String token = null;
-
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("AUTH_TOKEN".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        return token;
-    }
-
-    @GetMapping("/getnewtoken")
-    public String getnewtoken(HttpServletRequest request){
-
-        String token = null;
-
-        for (Cookie cookie : request.getCookies()) {
-            if ("AUTH_TOKEN".equals(cookie.getName())) {
-                token = cookie.getValue();
-//                    break;
-            }
-        }
-
-        AuthToken authToken = authTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
-
-        User user = authToken.getUser();
-
-        String userAgent = request.getHeader("User-Agent");
-
-//        AuthToken newAuthToken = new AuthToken();
-        String newToken = authToken.generateToken(user, userAgent);
-        System.out.println("User-Agent: " + userAgent);
-        System.out.println("newToken: " + newToken);
-
-        return newToken;
-    }
-
+    /**
+     * Створює cookie для токена автентифікації.
+     *
+     * @param authToken значення токена
+     * @return рядок cookie для додавання до заголовка відповіді
+     */
     private String createAuthTokenCookie(String authToken) {
         ResponseCookie cookie = ResponseCookie.from("AUTH_TOKEN", authToken)
                 .httpOnly(true)
@@ -252,6 +253,12 @@ public class AuthController {
         return cookie.toString();
     }
 
+    /**
+     * Створює cookie з кодом підтвердження (confirmation_code).
+     *
+     * @param confirmationCode унікальний код користувача
+     * @return рядок cookie для додавання до заголовка відповіді
+     */
     private String createConfirmationCodeCookie(String confirmationCode) {
         ResponseCookie confirmation_code_cookie = ResponseCookie.from("confirmation_code", confirmationCode)
                 .httpOnly(false)
