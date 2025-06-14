@@ -219,22 +219,6 @@ function App() {
       <header className="header">
         <div className="titleAndSelector">
           <ThemeSelector />
-          {/*<div className="themeSelector">
-
-            {Object.entries(themes).map(([key, theme]) => (
-              <div
-                key={key}
-                className="themeOption"
-                onClick={() => applyTheme(key)}
-              >
-                <span
-                  className="themeColor"
-                  style={{ backgroundColor: theme["--bg-color"] }}
-                />
-                <span className="themeName">{theme.name}</span>
-              </div>
-            ))}
-          </div>*/}
 
           <div className="site-title">DCRepetify</div>
         </div>
@@ -258,19 +242,6 @@ function App() {
             }}
             role="button"
           />
-
-          {/*<button
-            className="login_button"
-            onClick={() => {
-              if (loggedIn) {
-                setShowLogoutWarning(true);
-              } else {
-                setShowLoginForm(!showLoginForm);
-              }
-            }}
-          >
-            {loggedIn ? "Вийти" : "Увійти"}
-          </button>*/}
           
         </div>
       </header>
@@ -278,9 +249,6 @@ function App() {
       <main>
 
           <div className="main-box">
-            
-            
-            
             <div className="layout">
               
               <DecksAndCounters decks={decks} cards={cards} deckStats={deckStats} setDeckStats={setDeckStats} onDeskClick={handleDeckClick}/>
@@ -296,7 +264,6 @@ function App() {
               <BrowseBox cards={cards} setCards={setCards} decks={decks} handleCardClick={handleCardClick} flagNameColors={flagNameColors} />
               
             </div>
-
           </div>
 
       </main>

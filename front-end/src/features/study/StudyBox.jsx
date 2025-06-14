@@ -252,40 +252,15 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
       });
       setSelectedDates(allDates);
     }
-  /*if (!parentRef.current) return;
-
-    const isChecked = parentRef.current.checked;
-    const isIndeterminate = parentRef.current.indeterminate;
-    console.log(isChecked, isIndeterminate);
-    if (isIndeterminate || isChecked) {
-      // Зняти всі чекбокси (анчек)
-      setSelectedDates({});
-    } else {
-      // Встановити всі чекбокси (чек)
-      const allDates = {};
-      Object.keys(queueDateAndcount).forEach(date => {
-        allDates[date] = true;
-      });
-      console.log(allDates);
-      setSelectedDates(allDates);
-    }
-    const allChecked = Object.values(newSelected).every(v => v);
-    if (!allChecked) {
-      //setExpansion(false);
-      expansion = false;
-    }*/
   };
 
   useEffect(() => {
     const handleBeforeUnload = () => {
 
-
       const end = Date.now();
       if (startStudy !== null) {
         updateStudyTime(calcStudyTime());
       }
-
-      
 
     };
 
@@ -334,9 +309,6 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
       const isFilteredDue =
         card.daysJump > 0 &&
         selectedDueDates[card.endDate];
-        /*card.daysJump >= 0 &&
-        card.endDate &&
-        new Date(card.endDate) <= now*/
 
       if (includeDue && isFilteredDue) {
         queue.push({ ...card, dueInSession: true });
@@ -368,8 +340,6 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
         continue;
       }
 
-
-      
     }
 
     return queue;
@@ -391,14 +361,58 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
     setIsBackShown(true);
     setStartBackTime(Date.now());
 
-    setNextIntervalAgain(calcNextInterval(currentCard, "again").interval);
-    setNextIntervalHard(calcNextInterval(currentCard, "hard").interval);
-    setNextIntervalGood(calcNextInterval(currentCard, "good").interval);
-    setNextIntervalEasy(calcNextInterval(currentCard, "easy").interval);
+    setNextIntervalAgain("1 хв");
+    
+    if (currentCard.daysJump === -1) {
+      // Нова 
+      setNextIntervalHard("10 хв");
+      setNextIntervalGood("15 хв");
+      setNextIntervalEasy(formatInterval(3));
+    } else if (currentCard.daysJump === 0) {
+      // Знайома 
+      setNextIntervalHard("10 хв");
+      setNextIntervalGood(1);
+      setNextIntervalEasy(4);
+    } else {
+      // Due
+      setNextIntervalHard(calcNextInterval(currentCard, "hard").formatted);
+      setNextIntervalGood(calcNextInterval(currentCard, "good").formatted);
+      setNextIntervalEasy(calcNextInterval(currentCard, "easy").formatted);
+    }
   };
 
+  function formatInterval(intervalInDays) {
+    if (intervalInDays < 1) {
+      const minutes = Math.round(intervalInDays * 24 * 60);
+      return `${minutes} хв`;
+    } else if (intervalInDays < 30) {
+      const days = Math.round(intervalInDays);
+      return `${days} ${days === 1 ? "день" : "дні"}`;
+    } else if (intervalInDays < 365) {
+      const months = (intervalInDays / 30).toFixed(1);
+      return `${months} міс`;
+    } else {
+      const years = (intervalInDays / 365).toFixed(1);
+      return `${years} р`;
+    }
+  }
+
+
+  const qualityMap = {
+    again: 1,
+    hard: 2,
+    good: 3,
+    easy: 4,
+  };
+
+  function calculateNewEaseFactor(oldEase, quality) {
+    const q = qualityMap[quality];
+    const newEase = oldEase + (10 * (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)));
+    return Math.max(13, newEase); 
+  }
+
   const calcNextInterval = (card, quality) => {
-    let ease = card.ease || 2.5; // Початкове значення в Anki
+    let ease = card.ease || 25; // Початкове значення
     let interval = card.daysJump || 0;
     let lapses = card.lapses || 0;
 
@@ -520,7 +534,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
         [today]: {
           added: prev[today]?.added || 0,
           reviewed: (prev[today]?.reviewed || 0) + 1,
-          durationSeconds: prev[today]?.time || 0,
+          durationSeconds: prev[today]?.durationSeconds || 0,
           unsynchronised: -1,
           modifiedAt : modifiedAt,
           updatedAt: prev[today]?.updatedAt || null
@@ -546,7 +560,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
         [today]: {
           added: prev[today]?.added || 0,
           reviewed: prev[today]?.reviewed || 0,
-          durationSeconds: (prev[today]?.time || 0) + duration,
+          durationSeconds: (prev[today]?.durationSeconds || 0) + duration,
           unsynchronised: -1,
           modifiedAt : modifiedAt,
           updatedAt: prev[today]?.updatedAt || null
@@ -777,7 +791,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
                 </div>
                 <div
                   className={`expantionOfDateBox  ${familiarExpantion ? "hidden" : "visible"}`}
-                  /*style={`${newExpantion ?  "visible: hidden" : ""}`}*/>
+                  >
 
                   {queueDateAndcountOfFamiliar &&
                   Object.keys(queueDateAndcountOfFamiliar).length > 0 &&
@@ -879,7 +893,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
                 </div>
                 <div
                   className={`expantionOfDateBox  ${!dueExpantion ? "hidden" : "visible"}`}
-                  /*style={`${newExpantion ?  "visible: hidden" : ""}`}*/>
+                  >
 
                   {queueDateAndcountOfDue &&
                   Object.keys(queueDateAndcountOfDue).length > 0 &&
@@ -945,15 +959,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
 
           <div className="cardContainer">
             {currentCard && (
-              <div className="container" style={{width: 80 + "%", height: 100 + "%"}}> {/*cardDisplay 
-                <div className="cardFront">
-                  {currentCard.front}
-                </div>
-                
-                                  
-                  {/*<div className="cardBack">
-                    {currentCard.back}
-                  </div>*/}
+              <div className="container" style={{width: 80 + "%", height: 100 + "%"}}> 
 
                 <div className="fakeInputWrapper">
 
@@ -1061,7 +1067,7 @@ function StudyBox({ selectedDeckId, deckStats, decks, cards, setActivity }) {
 
                   <img 
                     src={reveal_icon}
-                    className="image_button " //back_button
+                    className="image_button "
                     alt="Повернутися назад" 
                     onClick={handleReveal()}
                     role="button"

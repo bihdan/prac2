@@ -342,9 +342,10 @@ fieldset:disabled{
 }
 
 .customLine{
-  width: 100%;
+  width: 90%;
 
   margin: 5px;
+  padding-left: 20px;
 
   border-bottom: 1px solid var(--text-color);
 }

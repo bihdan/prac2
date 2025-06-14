@@ -32,8 +32,6 @@ import java.util.Optional;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-//    private final UserService userService;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -51,11 +49,6 @@ public class AuthController {
     private BCryptPasswordEncoder encode = new BCryptPasswordEncoder(12);
 
 
-//    @Autowired
-//    public AuthController(UserService userService){
-//        this.userService = userService;
-//    }
-
     @PostMapping("/login")
     public ResponseEntity<?> logInUser(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest, HttpServletResponse response) { // @Valid
 
@@ -69,15 +62,12 @@ public class AuthController {
                 }
             }
 
-
-
+            
             if (token != null && !token.isEmpty()) {
                 Optional<AuthToken> authTokenOpt = authTokenRepository.findByToken(token);
                 if (authTokenOpt.isPresent()) {
                     return ResponseEntity.ok("Login successful by AUTH_TOKEN");
-                } /*else {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-                }*/
+                }
             }
         }
 
@@ -265,7 +255,7 @@ public class AuthController {
     private String createConfirmationCodeCookie(String confirmationCode) {
         ResponseCookie confirmation_code_cookie = ResponseCookie.from("confirmation_code", confirmationCode)
                 .httpOnly(false)
-                .secure(true) // true — якщо HTTPS
+                .secure(true)
                 .path("/")
                 .maxAge(Duration.ofDays(30))
                 .sameSite("Strict")

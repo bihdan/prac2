@@ -74,7 +74,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
 
       endDate: null,
       daysJump: -1,
-      ease: 2.5,
+      ease: 25,
       
       lapses: 0,
       reviews: 0,
@@ -148,8 +148,6 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
       id: confirmationCode + "-" + createdAt.toString(),
       name: trimmedName,
 
-      color: "#242424",
-
       unsynchronised: true,
       modifiedAt : createdAt,
       updatedAt: null,
@@ -181,7 +179,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
         [today]: {
           added: (prev[today]?.added || 0) + 1,
           reviewed: prev[today]?.reviewed || 0,
-          durationSeconds: prev[today]?.time || 0,
+          durationSeconds: prev[today]?.durationSeconds || 0,
           unsynchronised: -1,
           modifiedAt : modifiedAt,
           updatedAt: prev[today]?.updatedAt || null
@@ -202,7 +200,7 @@ function CreatingBox({ decks, setDecks, cards, setCards, prevStats, setDeckStats
     <div className="CreatingBoxInMain ">
 
         
-        {/* Створення картки */}
+        {/* картки */}
         <div className="creating-card oneOfMainBlock">
           <div className="top">
             <div className="top-text">Нова картка</div>
